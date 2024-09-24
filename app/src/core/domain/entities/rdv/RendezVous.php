@@ -2,60 +2,36 @@
 
 namespace toubeelib\core\domain\entities\rdv;
 
-
 use toubeelib\core\domain\entities\Entity;
-use toubeelib\core\domain\entities\praticien\Praticien;
-use toubeelib\core\domain\entities\rdv\RdvNotFoundException;
-use DateTime;
-use Ramsey\Uuid\Uuid;
-use toubeelib\core\dto\RdvDTO;
+use toubeelib\core\dto\RendezvousDTO;
 
 class RendezVous extends Entity
-{   
-    /**
-     * Déclarations des attributs
-    */
+{
 
-    //protected Patient $patient;
-    protected Praticien $praticien;
-    protected DateTime $date;
-    protected String $desc;
-    protected String $statue;
-    protected String $type;
+    protected String $praticien;
+    protected String $patient;
     protected String $specialite;
+    protected String $statut;
+    protected \DateTimeImmutable $date;
 
-    /**
-     * Constructeur
-     */
-    public function __construct(Praticien $prat, DateTime $date, String $desc)
-    {
+    public function __construct(string $prat, string $pat, string $spe, \DateTimeImmutable $date) {
+
         $this->praticien=$prat;
+        $this->patient=$pat;
+        $this->specialite=$spe;
         $this->date=$date;
-        $this->desc=$desc;
+        $this->statut='prévu';
+
     }
 
-    /**
-     * Fonction créerRendezvous
-     */
-    public static function creerRendezvous(array $informations){
-        new Rdv($informations['praticien'],$informations['date'],$informations['desc']);
+    public function setStatut(string $value){
+        $this->statut=$value;
     }
 
-    /**
-     * Fonction afficherInformations
-     */
-    public function afficherInformations(int $id){
-        if(rdv_exist($id))
-            return $this.toDTO();
-        else
-            return new RdvNotFoundException();
-    }
 
-    /**
-     * Fonction toDTO
-     */
-    public function toDTO(): RdvDTO
+    public function toDTO(): RendezvousDTO
     {
-        return new RdvDTO($this);
+        return new RendezvousDTO($this);
     }
+
 }

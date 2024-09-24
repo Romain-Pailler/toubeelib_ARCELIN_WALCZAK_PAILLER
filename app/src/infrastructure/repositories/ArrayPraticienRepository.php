@@ -59,7 +59,7 @@ class ArrayPraticienRepository implements PraticienRepositoryInterface
     {
 
         $specialite = self::SPECIALITES[$id] ??
-            throw new RepositoryEntityNotFoundException("Specialite $id not found") ;
+            throw new RepositoryEntityNotFoundException("Specialite $id not found");
 
         return new Specialite($specialite['ID'], $specialite['label'], $specialite['description']);
     }

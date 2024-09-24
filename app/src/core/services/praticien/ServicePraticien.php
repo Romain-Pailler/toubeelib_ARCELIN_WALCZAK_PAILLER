@@ -2,8 +2,10 @@
 
 namespace toubeelib\core\services\praticien;
 
+use PhpParser\Node\Expr\PreDec;
 use Respect\Validation\Exceptions\NestedValidationException;
 use toubeelib\core\domain\entities\praticien\Praticien;
+use toubeelib\core\domain\entities\praticien\Specialite;
 use toubeelib\core\dto\InputPraticienDTO;
 use toubeelib\core\dto\PraticienDTO;
 use toubeelib\core\dto\SpecialiteDTO;
@@ -19,11 +21,17 @@ class ServicePraticien implements ServicePraticienInterface
         $this->praticienRepository = $praticienRepository;
     }
 
-    public function createPraticien(InputPraticienDTO $p): PraticienDTO
+    public function createPraticien(InputPraticienDTO $praticien): PraticienDTO
     {
-        // TODO : valider les données et créer l'entité
-        return new PraticienDTO($praticien);
 
+        // TODO : valider les données et créer l'entité
+        $retour = new Praticien($praticien->nom,$praticien->prenom,$praticien->adresse,$praticien->tel); //new praticien
+        $retour->setSpecialite($this->praticienRepository->getSpecialiteById($praticien->specialite)); //on doit set une specialite
+        $this->praticienRepository->save($retour);  //save praticien (il obtient un id)
+        
+
+        $this->praticienRepository->getPraticienById($praticien->praticien);
+        return new PraticienDTO($retour);
 
     }
 

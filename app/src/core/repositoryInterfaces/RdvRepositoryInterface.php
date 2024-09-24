@@ -2,10 +2,14 @@
 
 namespace toubeelib\core\repositoryInterfaces;
 
-use toubeelib\core\domain\entities\rdv\RendezVous;
+use toubeelib\core\domain\entities\praticien\Praticien;
+use toubeelib\core\domain\entities\praticien\Specialite;
+use toubeelib\core\domain\entities\rdv\Rendezvous;
 
 interface RdvRepositoryInterface
 {
-    public function save(RendezVous $rdv): string;
-    public function consulerRdvById(int $id): RendezVous;
+
+    public function getRendezvousById(string $id): Rendezvous;
+    public function save(Rendezvous $rdv): string;
+
 }
