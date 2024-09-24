@@ -37,6 +37,8 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
         $retour = new RendezVous($rdv->praticien, $rdv->patient, $rdv->specialite, new \DateTimeImmutable($rdv->date));
 
+        $this->displayInLogger('Rendez-vous créer : Praticien -> '.$rdv->praticien.' / Patient -> '.$rdv->patient.' / Specialite -> '.$rdv->specialite);
+
         $this->rendezvousRepository->save($retour);
     
         return new RendezVousDTO($retour);
@@ -48,22 +50,28 @@ class ServiceRendezVous implements ServiceRendezVousInterface
     public function changePatient( string $id, string $new_patient ){
 
         $rdv = $this->rendezvousRepository->getRendezvousById($id);
+
+        $this->displayInLogger('Le patient du rendez-vous *'.$id.'* devient : *'.$new_patient.'*');
         
-        // Create a logger instance
-        $logger = new Logger('logger');
-
-        // Optionally, add some handlers to the logger
-        $logger->pushHandler(new StreamHandler(__DIR__.'/app.log', Logger::DEBUG));
-        $logger->pushHandler(new FirePHPHandler(Logger::WARNING));
-
-        $logger->info('Le patient du rendez-vous *'.$id.'* devient : *'.$new_patient.'*');
         $rdv->setPatient($new_patient);
 
+    }
+
+
+    public function displayInLogger(string $message){
+        $logger = new Logger('logger');
+
+        $logger->pushHandler(new StreamHandler(__DIR__.'/app.log'));
+
+        $logger->info($message);
     }
 
     public function changeSpecialite( string $id, string $new_spe ){
 
         $rdv = $this->rendezvousRepository->getRendezvousById($id);
+
+        $this->displayInLogger('La specialite du rendez-vous *'.$id.'* devient : *'.$new_spe.'*');
+        
 
         $rdv->setSpecialite($new_spe);
     }
@@ -85,6 +93,8 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
         $rdv=$this->rendezvousRepository->getRendezvousById($id_rdv);
         $rdv->setStatut('Annuler');
+
+        $this->displayInLogger('Le rendez-vous *'.$id_rdv.'* a été annuler');
 
     }
 }
