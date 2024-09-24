@@ -46,11 +46,9 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
         $rdv = $this->rendezvousRepository->getRendezvousById($id);
 
-
-        // Log to a new file every day
-        $log->
-
         $rdv->setPatient($new_patient);
+
+        
     }
 
     public function changeSpecialite( string $id, string $new_spe ){
