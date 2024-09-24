@@ -8,7 +8,10 @@ use toubeelib\core\dto\RendezVousDTO;
 use toubeelib\core\repositoryInterfaces\PraticienRepositoryInterface;
 use toubeelib\core\repositoryInterfaces\RdvRepositoryInterface;
 use toubeelib\core\repositoryInterfaces\RepositoryEntityNotFoundException;
-use Monolog\Handler\RotatingFileHandler;
+
+use Monolog\Logger; // Use the correct namespace for Logger
+use Monolog\Handler\StreamHandler; // Use the correct namespace for StreamHandler
+use Monolog\Handler\FirePHPHandler; // Use the correct namespace for FirePHPHandler
 
 
 class ServiceRendezVous implements ServiceRendezVousInterface
@@ -45,10 +48,17 @@ class ServiceRendezVous implements ServiceRendezVousInterface
     public function changePatient( string $id, string $new_patient ){
 
         $rdv = $this->rendezvousRepository->getRendezvousById($id);
+        
+        // Create a logger instance
+        $logger = new Logger('logger');
 
+        // Optionally, add some handlers to the logger
+        $logger->pushHandler(new StreamHandler(__DIR__.'/app.log', Logger::DEBUG));
+        $logger->pushHandler(new FirePHPHandler(Logger::WARNING));
+
+        $logger->info('Le patient du rendez-vous *'.$id.'* devient : *'.$new_patient.'*');
         $rdv->setPatient($new_patient);
 
-        
     }
 
     public function changeSpecialite( string $id, string $new_spe ){
