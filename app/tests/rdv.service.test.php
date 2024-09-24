@@ -58,10 +58,20 @@ try {
     echo $e->getMessage(). PHP_EOL;
 }
 
+print_r('Test 4 - Marque rdv Honoré ##########################################################"');
 
+try {
+    print_r('Avant changement');
+    print_r($service->getRendezvousById('r1'));
+    print_r('Après changement');
+    $service->marquerRendezvousHonore('r1');
+    print_r($service->getRendezvousById('r1'));
+} catch (\toubeelib\core\services\rdv\ServiceRendezVousIncorrectDataException $e) {
+    echo 'exception dans le changement du statut  :' . PHP_EOL;
+    echo $e->getMessage(). PHP_EOL;
+}
 
-
-print_r('Test 4 - Annulation Rendez Vous ##########################################################');
+print_r('Test 5 - Annulation Rendez Vous ##########################################################');
 
 try {
 
