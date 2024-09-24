@@ -8,6 +8,8 @@ use toubeelib\core\dto\RendezVousDTO;
 use toubeelib\core\repositoryInterfaces\PraticienRepositoryInterface;
 use toubeelib\core\repositoryInterfaces\RdvRepositoryInterface;
 use toubeelib\core\repositoryInterfaces\RepositoryEntityNotFoundException;
+use Monolog\Handler\RotatingFileHandler;
+
 
 class ServiceRendezVous implements ServiceRendezVousInterface
 {
@@ -43,6 +45,10 @@ class ServiceRendezVous implements ServiceRendezVousInterface
     public function changePatient( string $id, string $new_patient ){
 
         $rdv = $this->rendezvousRepository->getRendezvousById($id);
+
+
+        // Log to a new file every day
+        $log->
 
         $rdv->setPatient($new_patient);
     }
