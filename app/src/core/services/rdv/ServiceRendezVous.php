@@ -80,11 +80,55 @@ class ServiceRendezVous implements ServiceRendezVousInterface
     }
 
 
-    public function annulerRendezvous(string $id_rdv)
+    public function annulerRendezvous(string $id_rdv, string $annulePar)
     {
-
-        $rdv=$this->rendezvousRepository->getRendezvousById($id_rdv);
-        $rdv->setStatut('Annuler');
-
+        $rdv = $this->rendezvousRepository->getRendezvousById($id_rdv);
+        if ($annulePar === 'patient') {
+            $rdv->setStatut('Annulé par le patient');
+        } elseif ($annulePar === 'praticien') {
+            $rdv->setStatut('Annulé par le praticien');
+        } else {
+            throw new \InvalidArgumentException('Annulation invalide');
+        }
+        $this->rendezvousRepository->save($rdv);
     }
+
+    public function marquerRendezvousHonore(string $id_rdv)
+    {
+        $rdv = $this->rendezvousRepository->getRendezvousById($id_rdv);
+        $rdv->setStatut('Honoré');
+        $this->rendezvousRepository->save($rdv);
+    }
+
+    public function marquerRendezvousNonHonore(string $id_rdv)
+    {
+        $rdv = $this->rendezvousRepository->getRendezvousById($id_rdv);
+        $rdv->setStatut('Non honoré');
+        $this->rendezvousRepository->save($rdv);
+    }
+
+    public function marquerRendezvousPaye(string $id_rdv)
+    {
+        $rdv = $this->rendezvousRepository->getRendezvousById($id_rdv);
+        if ($rdv->getStatut() !== 'Honoré') {
+            throw new \DomainException('Le rendez-vous doit être honoré avant d\'être payé.');
+        }
+        $rdv->setStatut('Payé');
+        $this->rendezvousRepository->save($rdv);
+    }
+
+    public function transmettreAuxOrganismes(string $id_rdv)
+    {
+        $rdv = $this->rendezvousRepository->getRendezvousById($id_rdv);
+        if ($rdv->getStatut() !== 'Payé') {
+            throw new \DomainException('Le rendez-vous doit être payé avant transmission aux organismes sociaux.');
+        }
+        $rdv->setStatut('Transmis aux organismes sociaux');
+        $this->rendezvousRepository->save($rdv);
+    }
+
+
+
+
+
 }

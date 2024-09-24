@@ -72,7 +72,7 @@ try {
 
     print_r('Après annulation');
 
-    $service->annulerRendezvous('r1');
+    $service->annulerRendezvous('r1', 'patient');
 
     print_r($service->getRendezvousById('r1'));
 
