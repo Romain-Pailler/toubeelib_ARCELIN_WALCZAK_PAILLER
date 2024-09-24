@@ -27,10 +27,8 @@ class ServicePraticien implements ServicePraticienInterface
         // TODO : valider les données et créer l'entité
         $retour = new Praticien($praticien->nom,$praticien->prenom,$praticien->adresse,$praticien->tel); //new praticien
         $retour->setSpecialite($this->praticienRepository->getSpecialiteById($praticien->specialite)); //on doit set une specialite
-        $this->praticienRepository->save($retour);  //save praticien (il obtient un id)
         
-
-        $this->praticienRepository->getPraticienById($praticien->praticien);
+        $this->praticienRepository->getPraticienById($this->praticienRepository->save($retour));
         return new PraticienDTO($retour);
 
     }
