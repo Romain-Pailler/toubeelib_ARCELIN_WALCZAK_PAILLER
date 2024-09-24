@@ -107,10 +107,10 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
     public function marquerRendezvousHonore(string $id_rdv)
     {
+        $rdv = $this->rendezvousRepository->getRendezvousById($id_rdv);
         if ($rdv->getStatut === 'Annulé par le patient' || $rdv->getStatut === 'Annulé par le praticien') {
             throw new \DomainException('Le rendez-vous étant déjà annulé il ne peut pas être honoré');
         }
-        $rdv = $this->rendezvousRepository->getRendezvousById($id_rdv);
         $rdv->setStatut('Honoré');
         $this->rendezvousRepository->save($rdv);
     }
