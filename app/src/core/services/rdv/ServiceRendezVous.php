@@ -39,6 +39,22 @@ class ServiceRendezVous implements ServiceRendezVousInterface
     }
 
 
+
+    public function changePatient( string $id, string $new_patient ){
+
+        $rdv = $this->rendezvousRepository->getRendezvousById($id);
+
+        $rdv->setPatient($new_patient);
+    }
+
+    public function changeSpecialite( string $id, string $new_spe ){
+
+        $rdv = $this->rendezvousRepository->getRendezvousById($id);
+
+        $rdv->setSpecialite($new_spe);
+    }
+
+
     public function getRendezvousById(string $id): RendezVousDTO
     {
         try {

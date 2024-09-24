@@ -3,8 +3,6 @@
 use DI\ContainerBuilder;
 use Slim\Factory\AppFactory;
 
-
-
 $builder = new ContainerBuilder();
 $builder->addDefinitions(__DIR__ . '/settings.php' );
 $builder->addDefinitions(__DIR__ . '/dependencies.php');

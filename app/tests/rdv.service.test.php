@@ -7,7 +7,7 @@ $service = new toubeelib\core\services\rdv\ServiceRendezVous(new \toubeelib\infr
 
 $rdvdto = new \toubeelib\core\dto\InputRendezVousDTO('p1', 'pa1', 'A', '2024-09-02T09:00');
 
-print_r('Test 1 - Creation Rendez Vous');
+print_r('Test 1 - Creation Rendez Vous ##########################################################');
 
 try {
     $rdv1 = $service->creerRendezvous($rdvdto);
@@ -20,7 +20,48 @@ try {
 print_r($rdv1);
 
 
-print_r('Test 2 - Annulation Rendez Vous');
+print_r('Test 2 - Change patient ##########################################################"');
+
+try {
+
+    print_r('Avant changement');
+    
+    print_r($service->getRendezvousById('r1'));
+
+    print_r('Après changement');
+
+    $service->changePatient('r1','new_patient');
+
+    print_r($service->getRendezvousById('r1'));
+
+} catch (\toubeelib\core\services\rdv\ServiceRendezVousIncorrectDataException $e){
+    echo 'exception dans le changement d\'un patient  :' . PHP_EOL;
+    echo $e->getMessage(). PHP_EOL;
+}
+
+print_r('Test 3 - Change spe ##########################################################"');
+
+try {
+
+    print_r('Avant changement');
+    
+    print_r($service->getRendezvousById('r1'));
+
+    print_r('Après changement');
+
+    $service->changeSPecialite('r1','new_specialite');
+
+    print_r($service->getRendezvousById('r1'));
+
+} catch (\toubeelib\core\services\rdv\ServiceRendezVousIncorrectDataException $e){
+    echo 'exception dans le changement d\'une specialite  :' . PHP_EOL;
+    echo $e->getMessage(). PHP_EOL;
+}
+
+
+
+
+print_r('Test 4 - Annulation Rendez Vous ##########################################################');
 
 try {
 

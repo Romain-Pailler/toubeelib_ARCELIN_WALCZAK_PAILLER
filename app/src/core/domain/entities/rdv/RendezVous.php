@@ -28,6 +28,14 @@ class RendezVous extends Entity
         $this->statut=$value;
     }
 
+    public function setPatient(string $patient){
+        $this->patient=$patient;
+    }
+
+    public function setSpecialite(string $spe){
+        $this->specialite=$spe;
+    }
+
 
     public function toDTO(): RendezvousDTO
     {
