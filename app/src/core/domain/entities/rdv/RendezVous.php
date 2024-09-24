@@ -28,6 +28,11 @@ class RendezVous extends Entity
         $this->statut=$value;
     }
 
+    public function getStatut(): string
+    {
+        return $this->statut;
+    }
+
     public function setPatient(string $patient){
         $this->patient=$patient;
     }
