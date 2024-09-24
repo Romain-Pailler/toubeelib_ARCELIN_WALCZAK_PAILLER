@@ -91,7 +91,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
     public function annulerRendezvous(string $id_rdv, string $annulePar)
     {
         $rdv = $this->rendezvousRepository->getRendezvousById($id_rdv);
-        if ($rdv->getStatut === 'Honoré') {
+        if ($rdv->getStatut() === 'Honoré') {
             throw new \DomainException('Le rendez-vous étant déjà honoré il ne peut pas être annulé');
         }
         if ($annulePar === 'patient') {
@@ -108,7 +108,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
     public function marquerRendezvousHonore(string $id_rdv)
     {
         $rdv = $this->rendezvousRepository->getRendezvousById($id_rdv);
-        if ($rdv->getStatut === 'Annulé par le patient' || $rdv->getStatut === 'Annulé par le praticien') {
+        if ($rdv->getStatut() === 'Annulé par le patient' || $rdv->getStatut() === 'Annulé par le praticien') {
             throw new \DomainException('Le rendez-vous étant déjà annulé il ne peut pas être honoré');
         }
         $rdv->setStatut('Honoré');
