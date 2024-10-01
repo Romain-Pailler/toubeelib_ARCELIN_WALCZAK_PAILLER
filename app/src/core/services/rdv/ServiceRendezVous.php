@@ -2,6 +2,7 @@
 
 namespace toubeelib\core\services\rdv;
 
+use DateTimeImmutable;
 use toubeelib\core\domain\entities\rdv\RendezVous;
 use toubeelib\core\dto\InputRendezVousDTO;
 use toubeelib\core\dto\RendezVousDTO;
@@ -32,6 +33,9 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         //praticien ID valide ?
         if($this->praticienRepository->getPraticienById($rdv->praticien)==null)throw new ServiceRendezVousNoDataFoundException('invalid Praticien ID');
 
+        //praticien disponible ?
+        if(!$this->praticienEstDisponible($rdv->praticien, $rdv->date)) throw new ServiceRendezVousIncorrectDataException('invalid date');
+
         //Specialite valide ?
         if($this->praticienRepository->getPraticienById($rdv->praticien)->getSpecialite()->getId()!=$rdv->specialite)throw new ServiceRendezVousIncorrectDataException('invalid Specialite');
 
@@ -43,6 +47,20 @@ class ServiceRendezVous implements ServiceRendezVousInterface
     
         return new RendezVousDTO($retour);
 
+    }
+
+    public function praticienEstDisponible($id_prat, DateTimeImmutable $date): bool {
+        
+        $res = true;
+
+        $liste_rdv_prat = $this->rendezvousRepository->getRendezvousByPraticienId($id_prat);
+
+        foreach($liste_rdv_prat as $rdv){
+            if($rdv->date === $date)
+                $res=false;
+        }
+
+        return $res;
     }
 
 

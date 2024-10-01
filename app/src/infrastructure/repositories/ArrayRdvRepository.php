@@ -39,14 +39,20 @@ class ArrayRdvRepository implements RdvRepositoryInterface
         
     }
 
-    // public function praticienEstDisponible(Praticien $praticien) : bool{
-    //     for($i=1; $i<sizeof($this->rdvs);$i++)
-    //     {
-    //         $rdv=$this->rdvs[$i];
-            
-    //         $rdv->getID
-    //     }
-    // }
+    public function getRendezvousByPraticienId(string $id_prat) : array{
+        $retour = [];
+
+        foreach ($this->rdvs as $key => $value) {
+            if($key===$id_prat)
+            {
+                echo "Clé : " . $key . " - Valeur : " . $value . "<br>";
+                array_push($retour, $value);
+            }
+        }
+
+        return $retour;
+        
+    }
 
     public function save(Rendezvous $rdv): string{
         $ID = Uuid::uuid4()->toString();
