@@ -2,6 +2,9 @@
 
 namespace toubeelib\core\services\rdv;
 
+use DateInterval;
+use DatePeriod;
+use DateTime;
 use DateTimeImmutable;
 use toubeelib\core\domain\entities\rdv\RendezVous;
 use toubeelib\core\dto\InputRendezVousDTO;
@@ -17,6 +20,13 @@ use PhpParser\Node\Scalar\MagicConst\Dir;
 
 class ServiceRendezVous implements ServiceRendezVousInterface
 {
+
+    //constantes
+    const HEURE_RDV_DEBUT = '08:00';
+    const HEURE_RDV_FIN = '18:00';
+    const INTERVAL_HEURE = 'PT30M';
+
+    //attributs
     private RdvRepositoryInterface $rendezvousRepository;
     private PraticienRepositoryInterface $praticienRepository;
 
@@ -49,6 +59,51 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
     }
 
+    public function listeDisposPraticien(string $id_prat, string $date_deb, string $date_fin) : array{
+
+        //retour
+        $retour = [];
+
+        //day
+        $deb_day = new DateTimeImmutable($date_deb);
+        $fin_day = new DateTimeImmutable($date_fin);
+        $interval_day = new DateInterval('P1D');
+
+        //hour
+        $deb_hour = new DateTimeImmutable(self::HEURE_RDV_DEBUT);
+        $fin_hour = new DateTimeImmutable(self::HEURE_RDV_FIN);
+        $interval_hour = new DateInterval(self::INTERVAL_HEURE);
+    
+        $period_day = new DatePeriod($deb_day, $interval_day, $fin_day->modify('+1 day'));
+    
+        foreach ($period_day as $day) {
+    
+            // Vérifie si le jour est un samedi (6) ou un dimanche (7)
+            if (in_array($day->format('N'), [6, 7]))
+                continue; // Saute ce jour
+            
+            $deb_hour_of_day = $day->setTime($deb_hour->format('H'), $deb_hour->format('i'));
+            $fin_hour_of_day = $day->setTime($fin_hour->format('H'), $fin_hour->format('i'));
+            $period_hour = new DatePeriod($deb_hour_of_day, $interval_hour, $fin_hour_of_day);
+    
+            foreach ($period_hour as $hour) {
+    
+                // Exclure la pause de midi (entre 12h00 et 14h00)
+                if ($hour->format('H') >= 12 && $hour->format('H') < 14)
+                    continue; // Saute cet horaire
+    
+                if ($this->praticienEstDisponible($id_prat, $hour))
+                    array_push($retour, $hour);
+                
+            }
+        }
+
+        return $retour;
+    }
+    
+    
+
+
     public function praticienEstDisponible($id_prat, DateTimeImmutable $date): bool {
         
         $res = true;
@@ -58,13 +113,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         foreach($liste_rdv_prat as $rdv){
 
             if($rdv->date == $date)
-            {
-                $this->displayInLogger('non');
                 $res=false;
-            }else{
-                  $this->displayInLogger('oui');
-            }
-                
         }
 
         return $res;
@@ -75,10 +124,10 @@ class ServiceRendezVous implements ServiceRendezVousInterface
     public function changePatient( string $id, string $new_patient ){
 
         $rdv = $this->rendezvousRepository->getRendezvousById($id);
-
-        $this->displayInLogger('Le patient du rendez-vous *'.$id.'* devient : *'.$new_patient.'*');
         
         $rdv->setPatient($new_patient);
+
+        $this->displayInLogger('Le patient du rendez-vous *'.$id.'* devient : *'.$new_patient.'*');
 
     }
 
@@ -94,11 +143,11 @@ class ServiceRendezVous implements ServiceRendezVousInterface
     public function changeSpecialite( string $id, string $new_spe ){
 
         $rdv = $this->rendezvousRepository->getRendezvousById($id);
+        
+        $rdv->setSpecialite($new_spe);
 
         $this->displayInLogger('La specialite du rendez-vous *'.$id.'* devient : *'.$new_spe.'*');
-        
 
-        $rdv->setSpecialite($new_spe);
     }
 
 
@@ -127,7 +176,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
             throw new \InvalidArgumentException('Annulation invalide');
         }
         $this->rendezvousRepository->save($rdv);
-
+        $this->displayInLogger('Le rendez-vous *'.$id_rdv.'* a été annuler.');
     }
 
     public function marquerRendezvousHonore(string $id_rdv)
@@ -138,6 +187,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         }
         $rdv->setStatut('Honoré');
         $this->rendezvousRepository->save($rdv);
+        $this->displayInLogger('Le rendez-vous *'.$id_rdv.'* a été honorer.');
     }
 
     public function marquerRendezvousNonHonore(string $id_rdv)
@@ -145,6 +195,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         $rdv = $this->rendezvousRepository->getRendezvousById($id_rdv);
         $rdv->setStatut('Non honoré');
         $this->rendezvousRepository->save($rdv);
+        $this->displayInLogger('Le rendez-vous *'.$id_rdv.'* n\'est pas honoré.');
     }
 
     public function marquerRendezvousPaye(string $id_rdv)
@@ -155,6 +206,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         }
         $rdv->setStatut('Payé');
         $this->rendezvousRepository->save($rdv);
+        $this->displayInLogger('Le rendez-vous *'.$id_rdv.'* a été payer.');
     }
 
     public function transmettreAuxOrganismes(string $id_rdv)
@@ -165,6 +217,8 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         }
         $rdv->setStatut('Transmis aux organismes sociaux');
         $this->rendezvousRepository->save($rdv);
+        $this->displayInLogger('Le rendez-vous *'.$id_rdv.'* a été transmis aux organismes sociaux.');
+
     }
 
 
