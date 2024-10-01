@@ -30,25 +30,27 @@ class GetRendezVousAction extends AbstractAction
                 "self"=> [
                     "href"=> "/rdvs/" . $rdv->ID
                 ],
-                "modifier"=>[
-                    "href"=> "/rdvs/" . $rdv->ID
-                ],
-                "annuler"=>[
-                    "href"=> "/rdvs/" . $rdv->ID
-                ],
-                "praticien"=>[
-                    "href"=> "/praticiens/" . $rdv->praticien
-                ],
-                "patient"=>[
-                    "href"=> "/patients/" . $rdv->patient
-                ],
+                // "modifier"=>[
+                //     "href"=> "/rdvs/" . $rdv->ID
+                // ],
+                // "annuler"=>[
+                //     "href"=> "/rdvs/" . $rdv->ID
+                // ],
+                // "praticien"=>[
+                //     "href"=> "/praticiens/" . $rdv->praticien
+                // ],
+                // "patient"=>[
+                //     "href"=> "/patients/" . $rdv->patient
+                // ],
                 ]];
             $response->getBody()->write(json_encode($res));
             return $response->withHeader('Content-Type','application/json')
             ->withStatus(200);
-        } catch (\Throwable $th) {
-            //throw $th;
-        }
+        } catch (\InvalidArgumentException $th) {
+                $rs->getBody()->write(json_encode(['error' => 'Rendez-vous non trouvé']));
+                return $rs
+                    ->withHeader('Content-Type', 'application/json')
+                    ->withStatus(404);
 
     }
 }
