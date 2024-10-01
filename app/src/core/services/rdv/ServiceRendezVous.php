@@ -135,7 +135,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
     public function displayInLogger(string $message){
         $logger = new Logger('logger');
 
-        $logger->pushHandler(new StreamHandler(__DIR__.'/app.log'));
+        $logger->pushHandler(new StreamHandler('../logs/app.log'));
 
         $logger->info($message);
     }

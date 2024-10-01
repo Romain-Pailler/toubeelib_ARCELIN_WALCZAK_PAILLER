@@ -1,3 +1,0 @@
-[2024-10-01T14:28:24.070827+00:00] logger.INFO: Le patient du rendez-vous *r1* devient : *new_patient* [] []
-[2024-10-01T14:28:24.071303+00:00] logger.INFO: La specialite du rendez-vous *r1* devient : *new_specialite* [] []
-[2024-10-01T14:28:24.073471+00:00] logger.INFO: Le rendez-vous *r1* a été honorer. [] []

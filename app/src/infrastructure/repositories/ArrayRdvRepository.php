@@ -10,9 +10,6 @@ use toubeelib\core\repositoryInterfaces\RepositoryEntityNotFoundException;
 
 class ArrayRdvRepository implements RdvRepositoryInterface
 {
-    const CRENEAUX = [
-                        
-                    ];
 
     private array $rdvs = [];
 
