@@ -10,6 +10,7 @@ interface ServiceRendezVousInterface
 
     public function creerRendezvous(InputRendezVousDTO $informations): RendezVousDTO;
     public function annulerRendezvous(string $id, string $annuler_par);
+    public function getRendezvousById(string $id): RendezVousDTO;
 
 
 }
