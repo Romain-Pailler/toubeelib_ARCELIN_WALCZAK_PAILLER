@@ -2,10 +2,12 @@
 
 namespace toubeelib\core\services\rdv;
 
+
 use DateInterval;
 use DatePeriod;
 use DateTime;
 use DateTimeImmutable;
+
 use toubeelib\core\domain\entities\rdv\RendezVous;
 use toubeelib\core\dto\InputRendezVousDTO;
 use toubeelib\core\dto\RendezVousDTO;
@@ -13,10 +15,10 @@ use toubeelib\core\repositoryInterfaces\PraticienRepositoryInterface;
 use toubeelib\core\repositoryInterfaces\RdvRepositoryInterface;
 use toubeelib\core\repositoryInterfaces\RepositoryEntityNotFoundException;
 
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
-use Monolog\Handler\FirePHPHandler;
-use PhpParser\Node\Scalar\MagicConst\Dir;
+use Monolog\Logger; // Use the correct namespace for Logger
+use Monolog\Handler\StreamHandler; // Use the correct namespace for StreamHandler
+use Monolog\Handler\FirePHPHandler; // Use the correct namespace for FirePHPHandler
+
 
 class ServiceRendezVous implements ServiceRendezVousInterface
 {
@@ -43,15 +45,12 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         //praticien ID valide ?
         if($this->praticienRepository->getPraticienById($rdv->praticien)==null)throw new ServiceRendezVousNoDataFoundException('invalid Praticien ID');
 
-        //praticien disponible ?
-        if(!$this->praticienEstDisponible($rdv->praticien, new DateTimeImmutable($rdv->date))) throw new ServiceRendezVousIncorrectDataException('invalid date');
-
         //Specialite valide ?
         if($this->praticienRepository->getPraticienById($rdv->praticien)->getSpecialite()->getId()!=$rdv->specialite)throw new ServiceRendezVousIncorrectDataException('invalid Specialite');
 
         $retour = new RendezVous($rdv->praticien, $rdv->patient, $rdv->specialite, new \DateTimeImmutable($rdv->date));
 
-        $this->displayInLogger('Rendez-vous créer : Praticien -> '.$rdv->praticien.' / Patient -> '.$rdv->patient.' / Specialite -> '.$rdv->specialite.' / Date -> '.$rdv->date);
+        $this->displayInLogger('Rendez-vous créer : Praticien -> '.$rdv->praticien.' / Patient -> '.$rdv->patient.' / Specialite -> '.$rdv->specialite);
 
         $this->rendezvousRepository->save($retour);
     
