@@ -17,7 +17,16 @@ try {
 }
 
 
-print_r($rdv1);
+print_r('Test 1 bis - Creation dun Rendez Vous deja existant ##########################################################');
+
+try {
+    $rdv1 = $service->creerRendezvous($rdvdto);
+    $rdv1 = $service->creerRendezvous($rdvdto);
+
+} catch (\toubeelib\core\services\rdv\ServiceRendezVousIncorrectDataException $e){
+    echo 'exception dans la creation d\un second meme rendezvous :' . PHP_EOL;
+    echo $e->getMessage(). PHP_EOL;
+}
 
 
 print_r('Test 2 - Change patient ##########################################################"');

@@ -12,8 +12,8 @@ use toubeelib\core\repositoryInterfaces\RepositoryEntityNotFoundException;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
-use Monolog\Handler\FirePHPHandler; 
- 
+use Monolog\Handler\FirePHPHandler;
+use PhpParser\Node\Scalar\MagicConst\Dir;
 
 class ServiceRendezVous implements ServiceRendezVousInterface
 {
@@ -34,14 +34,14 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         if($this->praticienRepository->getPraticienById($rdv->praticien)==null)throw new ServiceRendezVousNoDataFoundException('invalid Praticien ID');
 
         //praticien disponible ?
-        if(!$this->praticienEstDisponible($rdv->praticien, $rdv->date)) throw new ServiceRendezVousIncorrectDataException('invalid date');
+        if(!$this->praticienEstDisponible($rdv->praticien, new DateTimeImmutable($rdv->date))) throw new ServiceRendezVousIncorrectDataException('invalid date');
 
         //Specialite valide ?
         if($this->praticienRepository->getPraticienById($rdv->praticien)->getSpecialite()->getId()!=$rdv->specialite)throw new ServiceRendezVousIncorrectDataException('invalid Specialite');
 
         $retour = new RendezVous($rdv->praticien, $rdv->patient, $rdv->specialite, new \DateTimeImmutable($rdv->date));
 
-        $this->displayInLogger('Rendez-vous créer : Praticien -> '.$rdv->praticien.' / Patient -> '.$rdv->patient.' / Specialite -> '.$rdv->specialite);
+        $this->displayInLogger('Rendez-vous créer : Praticien -> '.$rdv->praticien.' / Patient -> '.$rdv->patient.' / Specialite -> '.$rdv->specialite.' / Date -> '.$rdv->date);
 
         $this->rendezvousRepository->save($retour);
     
@@ -56,8 +56,15 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         $liste_rdv_prat = $this->rendezvousRepository->getRendezvousByPraticienId($id_prat);
 
         foreach($liste_rdv_prat as $rdv){
-            if($rdv->date === $date)
+
+            if($rdv->date == $date)
+            {
+                $this->displayInLogger('non');
                 $res=false;
+            }else{
+                  $this->displayInLogger('oui');
+            }
+                
         }
 
         return $res;
