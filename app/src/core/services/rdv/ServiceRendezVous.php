@@ -14,6 +14,7 @@ use toubeelib\core\dto\RendezVousDTO;
 use toubeelib\core\repositoryInterfaces\PraticienRepositoryInterface;
 use toubeelib\core\repositoryInterfaces\RdvRepositoryInterface;
 use toubeelib\core\repositoryInterfaces\RepositoryEntityNotFoundException;
+use toubeelib\core\services\rdv\ServiceRendezVousNotDataFoundException;
 
 use Monolog\Logger; // Use the correct namespace for Logger
 use Monolog\Handler\StreamHandler; // Use the correct namespace for StreamHandler
@@ -153,10 +154,10 @@ class ServiceRendezVous implements ServiceRendezVousInterface
     public function getRendezvousById(string $id): RendezVousDTO
     {
         try {
-            $praticien = $this->rendezvousRepository->getRendezvousById($id);
-            return new RendezVousDTO($praticien);
+            $rdv = $this->rendezvousRepository->getRendezvousById($id);
+            return new RendezVousDTO($rdv);
         } catch(RepositoryEntityNotFoundException $e) {
-            throw new ServiceRendezVousNoDataFoundException('invalid Praticien ID');
+            throw new ServiceRendezVousNotDataFoundException("Invalid RDV ID", 404, $e);
         }
     }
 
