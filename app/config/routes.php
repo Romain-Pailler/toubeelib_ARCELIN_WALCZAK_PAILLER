@@ -10,7 +10,7 @@ return function( \Slim\App $app):\Slim\App {
 
     $app->get('/rdvs/{ID-RDV}',\toubeelib\application\actions\GetRendezVousAction::class);
 
-    $app->patch('/rdvs/{ID-RDV}',\toubeelib\application\actions\ModifRendezVous::class);
+    $app->patch('/rdvs/{ID-RDV}',\toubeelib\application\actions\ModifRendezVousAction::class);
 
     return $app;
 };
