@@ -55,6 +55,7 @@ class ArrayPraticienRepository implements PraticienRepositoryInterface
         $this->praticiens['p3']->setID('p3');
 
     }
+    
     public function getSpecialiteById(string $id): Specialite
     {
 
@@ -62,6 +63,32 @@ class ArrayPraticienRepository implements PraticienRepositoryInterface
             throw new RepositoryEntityNotFoundException("Specialite $id not found");
 
         return new Specialite($specialite['ID'], $specialite['label'], $specialite['description']);
+    }
+
+    public function getPraticiensBySpecialite(string $specialite) : array{
+
+        $retour = [];
+
+        foreach($this->praticiens as $praticien)
+            if($praticien->specialite->label == $specialite)
+                array_push($retour,$praticien);
+
+        return $retour;
+
+    }
+
+
+
+    public function getPraticiensByCity(string $city) : array{
+
+        $retour = [];
+
+        foreach($this->praticiens as $praticien)
+            if($praticien->adresse == $city)
+                array_push($retour,$praticien);
+
+        return $retour;
+
     }
 
     public function save(Praticien $praticien): string

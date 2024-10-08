@@ -41,3 +41,24 @@ try {
     echo $e->getMessage(). PHP_EOL;
 }
 
+
+
+
+
+try {
+    print_r($service->getPraticiensBySpecialite('Dentiste'));
+} catch (\toubeelib\core\services\praticien\ServicePraticienInvalidDataException $e){
+    echo 'exception dans la récupération d\'un praticien :' . PHP_EOL;
+    echo $e->getMessage(). PHP_EOL;
+}
+
+
+
+try {
+    print_r($service->getPraticiensByCity('nancy'));
+} catch (\toubeelib\core\services\praticien\ServicePraticienInvalidDataException $e){
+    echo 'exception dans la récupération d\'un praticien :' . PHP_EOL;
+    echo $e->getMessage(). PHP_EOL;
+}
+
+

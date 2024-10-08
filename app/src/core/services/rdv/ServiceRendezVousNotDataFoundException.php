@@ -2,7 +2,7 @@
 
 namespace toubeelib\core\services\rdv;
 
-class ServiceRendezVousNoDataFoundException extends \Exception
+class ServiceRendezVousNotDataFoundException extends \Exception
 {
 
 }

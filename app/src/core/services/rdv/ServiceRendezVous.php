@@ -43,7 +43,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
     {
 
         //praticien ID valide ?
-        if($this->praticienRepository->getPraticienById($rdv->praticien)==null)throw new ServiceRendezVousNoDataFoundException('invalid Praticien ID');
+        if($this->praticienRepository->getPraticienById($rdv->praticien)==null)throw new ServiceRendezVousNotDataFoundException('invalid Praticien ID');
 
         //Specialite valide ?
         if($this->praticienRepository->getPraticienById($rdv->praticien)->getSpecialite()->getId()!=$rdv->specialite)throw new ServiceRendezVousIncorrectDataException('invalid Specialite');
@@ -58,6 +58,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
     }
 
+    
     public function listeDisposPraticien(string $id_prat, string $date_deb, string $date_fin) : array{
 
         //retour
@@ -156,7 +157,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
             $praticien = $this->rendezvousRepository->getRendezvousById($id);
             return new RendezVousDTO($praticien);
         } catch(RepositoryEntityNotFoundException $e) {
-            throw new ServiceRendezVousNoDataFoundException('invalid Praticien ID');
+            throw new ServiceRendezVousNotDataFoundException('invalid Praticien ID');
         }
     }
 
