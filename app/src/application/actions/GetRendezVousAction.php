@@ -4,6 +4,8 @@ namespace toubeelib\application\actions;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use toubeelib\core\services\rdv\ServiceRendezVousInterface;
+use toubeelib\core\services\rdv\ServiceRendezVousNotDataFoundException;
+use toubeelib\core\repositoryInterfaces\RepositoryEntityNotFoundException;
 
 class GetRendezVousAction extends AbstractAction
 {
@@ -46,11 +48,11 @@ class GetRendezVousAction extends AbstractAction
             $response->getBody()->write(json_encode($res));
             return $response->withHeader('Content-Type','application/json')
             ->withStatus(200);
-        } catch (\InvalidArgumentException $th) {
-                $rs->getBody()->write(json_encode(['error' => 'Rendez-vous non trouvé']));
-                return $rs
-                    ->withHeader('Content-Type', 'application/json')
-                    ->withStatus(404);
+        } catch (ServiceRendezVousNotDataFoundException $e) {
+            $response->getBody()->write(json_encode(['error' => 'Rendez-vous non trouvé']));
+            return $response->withHeader('Content-Type', 'application/json')
+                            ->withStatus(404);
 
     }
+}
 }

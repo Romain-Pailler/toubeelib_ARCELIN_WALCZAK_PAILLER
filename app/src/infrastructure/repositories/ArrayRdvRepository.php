@@ -55,6 +55,25 @@ class ArrayRdvRepository implements RdvRepositoryInterface
         $this->rdvs[$ID] = $rdv;
         return $ID;
     }
+    public function update(string $id, array $fields): RendezVous
+    {
+        if (!isset($this->rdvs[$id])) {
+            throw new RepositoryEntityNotFoundException("Le rendez-vous avec l'ID $id n'a pas été trouvé.");
+        }
+        
+        $rdv = $this->rdvs[$id];
 
-  
+        
+        if (isset($fields['specialite'])) {
+            $rdv->setSpecialite($fields['specialite']);
+        }
+
+        if (isset($fields['patient'])) {
+            $rdv->setPatient($fields['patient']);
+        }
+
+        $this->rdvs[$id] = $rdv;
+
+        return $rdv;
+    }
 }
