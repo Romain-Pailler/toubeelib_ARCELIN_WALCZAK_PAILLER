@@ -19,26 +19,32 @@ $pe22 = $service->getPraticienById($pe2->ID);
 
 try {
     $pe33 = $service->getPraticienById('ABCDE');
-} catch (\toubeelib\core\services\praticien\ServicePraticienInvalidDataException $e){
+} catch (\toubeelib\core\services\praticien\ServicePraticienInvalidDataException $e) {
     echo 'exception dans la récupération d\'un praticien :' . PHP_EOL;
-    echo $e->getMessage(). PHP_EOL;
+    echo $e->getMessage() . PHP_EOL;
 }
 
-$pdto3 = new \toubeelib\core\dto\InputPraticienDTO('némar', 'jean', 'lassou', '06 07 08 09 12', 'Z');
+print_r('###############################################################');
+
 try {
-    $pe2 = $service->createPraticien($pdto3);
+    $pdto3 = new \toubeelib\core\dto\InputPraticienDTO('némar', 'jean', 'lassou', '06 07 08 09 12', 'A');
+
+    print_r($service->createPraticien($pdto3));
 } catch (\toubeelib\core\services\praticien\ServicePraticienInvalidDataException $e) {
     echo 'exception dans la création d\'un praticien :' . PHP_EOL;
-    echo $e->getMessage(). PHP_EOL;
+    echo $e->getMessage() . PHP_EOL;
 }
+
+print_r('###############################################################');
+
 
 try {
     print 'praticien prédéfini p1 : ' . PHP_EOL;
     $p1 = $service->getPraticienById('p1');
     print_r($p1);
-} catch (\toubeelib\core\services\praticien\ServicePraticienInvalidDataException $e){
+} catch (\toubeelib\core\services\praticien\ServicePraticienInvalidDataException $e) {
     echo 'exception dans la récupération d\'un praticien :' . PHP_EOL;
-    echo $e->getMessage(). PHP_EOL;
+    echo $e->getMessage() . PHP_EOL;
 }
 
 
@@ -47,18 +53,16 @@ try {
 
 try {
     print_r($service->getPraticiensBySpecialite('Dentiste'));
-} catch (\toubeelib\core\services\praticien\ServicePraticienInvalidDataException $e){
+} catch (\toubeelib\core\services\praticien\ServicePraticienInvalidDataException $e) {
     echo 'exception dans la récupération d\'un praticien :' . PHP_EOL;
-    echo $e->getMessage(). PHP_EOL;
+    echo $e->getMessage() . PHP_EOL;
 }
 
 
 
 try {
     print_r($service->getPraticiensByCity('nancy'));
-} catch (\toubeelib\core\services\praticien\ServicePraticienInvalidDataException $e){
+} catch (\toubeelib\core\services\praticien\ServicePraticienInvalidDataException $e) {
     echo 'exception dans la récupération d\'un praticien :' . PHP_EOL;
-    echo $e->getMessage(). PHP_EOL;
+    echo $e->getMessage() . PHP_EOL;
 }
-
-
