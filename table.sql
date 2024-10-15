@@ -7,6 +7,15 @@
 --Il faut se connecter au serveur PostgreSQL pour créer la base de données donc avec adminer rentrer les identifiants propres au Praticien / Patient / RDV 
 
 
+--PostgreSQL FDW commands utils
+DROP FOREIGN TABLE IF EXISTS praticien;
+DROP FOREIGN TABLE IF EXISTS patient;
+DROP USER MAPPING IF EXISTS FOR current_user SERVER praticien_server;
+DROP USER MAPPING IF EXISTS FOR current_user SERVER patient_server;
+DROP SERVER IF EXISTS praticien_server CASCADE;
+DROP SERVER IF EXISTS patient_server CASCADE;
+
+
 --Praticien DB
 
 CREATE TABLE Praticien (
@@ -36,7 +45,7 @@ CREATE SERVER praticien_server
 
 CREATE USER MAPPING FOR current_user
     SERVER praticien_server
-    OPTIONS (user 'praticien_user', password 'praticien_password');
+    OPTIONS (user 'root', password 'root');
 
 CREATE FOREIGN TABLE praticien (
     id SERIAL,
@@ -56,7 +65,7 @@ CREATE SERVER patient_server
 
 CREATE USER MAPPING FOR current_user
     SERVER patient_server
-    OPTIONS (user 'patient_user', password 'patient_password');
+    OPTIONS (user 'root', password 'root');
 
 CREATE FOREIGN TABLE patient (
     id SERIAL,
