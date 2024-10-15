@@ -17,4 +17,4 @@ cache.properties
 composer.phar
 composer.lock
 
-.env
+*.env
