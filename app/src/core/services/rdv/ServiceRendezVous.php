@@ -56,9 +56,10 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         }
 
         try {
-            print_r('la date--------------------' . $rdv->date);
+            print_r($this->listeDisposPraticienIndividuel($rdv->praticien, $rdv->date, $rdv->date));
 
             if (!in_array(new DateTimeImmutable($rdv->date), $this->listeDisposPraticienIndividuel($rdv->praticien, $rdv->date, $rdv->date))) {
+                print_r('----------------------------------probleme de date');
                 throw new ServiceRendezVousIncorrectDataException();
             }
         } catch (ServiceRendezVousIncorrectDataException $e) {
@@ -131,7 +132,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
     public function listeDisposPraticienIndividuel(string $id_prat, string $date_debut, string $date_fin): array
     {
-        // Retour
+        // Retour : on conserve un tableau d'objets DateTimeImmutable
         $retour = [];
 
         $praticien = $this->praticienRepository->getPraticienById($id_prat);
@@ -161,7 +162,6 @@ class ServiceRendezVous implements ServiceRendezVousInterface
                 continue;
             }
 
-
             $deb_hour_of_day = $day->setTime($deb_hour->format('H'), $deb_hour->format('i'));
             $fin_hour_of_day = $day->setTime($fin_hour->format('H'), $fin_hour->format('i'));
             $period_hour = new DatePeriod($deb_hour_of_day, $interval_hour, $fin_hour_of_day);
@@ -172,15 +172,20 @@ class ServiceRendezVous implements ServiceRendezVousInterface
                     continue; // Saute cet horaire
                 }
 
+                // Si le praticien est disponible à cette heure, on l'ajoute
                 if ($this->praticienEstDisponible($id_prat, $hour)) {
-                    print_r($day);
-                    array_push($retour, $day);
+                    // Ajouter l'objet DateTimeImmutable seulement si non présent dans le tableau
+                    if (!in_array($hour, $retour)) {
+                        $retour[] = $hour; // Ajout de l'objet DateTimeImmutable
+                    }
                 }
             }
         }
 
-        return $retour;
+        return $retour; // Retourne un tableau d'objets DateTimeImmutable
     }
+
+
 
     private function dateEstVacance(DateTimeImmutable $date, array $vacationPeriods): bool
     {

@@ -24,11 +24,12 @@ print_r('Test 1 bis - Creation Rendez Vous #####################################
 
 try {
 
-    $rdv1 = $service->creerRendezvous(new \toubeelib\core\dto\InputRendezVousDTO('p1', 'pa1', 'A', '2024-10-02 09:00'));
+    $rdv1 = $service->creerRendezvous(new \toubeelib\core\dto\InputRendezVousDTO('p1', 'pa1', 'A', '2024-10-02 09:30'));
 } catch (\toubeelib\core\services\rdv\ServiceRendezVousIncorrectDataException $e) {
     echo 'exception dans la récupération d\'un praticien :' . PHP_EOL;
     echo $e->getMessage() . PHP_EOL;
 }
+
 
 
 print_r('Test 2 - Change patient ##########################################################"');
