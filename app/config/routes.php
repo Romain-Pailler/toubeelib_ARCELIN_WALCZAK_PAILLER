@@ -12,5 +12,17 @@ return function( \Slim\App $app):\Slim\App {
 
     $app->patch('/rdvs/{ID-RDV}',\toubeelib\application\actions\ModifRendezVousAction::class);
 
+    $app->post('/rdvs',\toubeelib\application\actions\CreateRendezVousAction::class);
+
+    $app->delete('/rdvs/{ID-RDV}',\toubeelib\application\actions\DeleteRendezVousAction::class);
+
+    $app->post('/praticiens',\toubeelib\application\actions\CreatePraticienAction::class);
+
+
+    $app->options('/{routes:.+}',
+        function( Request $rq,
+                  Response $rs, array $args) : Response {
+            return $rs;
+        })->add(new \toubeelib\application\middlewares\CorsMiddleware());
     return $app;
 };

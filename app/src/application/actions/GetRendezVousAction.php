@@ -23,7 +23,7 @@ class GetRendezVousAction extends AbstractAction
             $rdv = $this->rdvRepo->getRendezvousById($idRdv);
             $res = ["Rendez-Vous" =>[
                 "id" => $rdv->ID,
-                "id_praticient" => $rdv->praticien,
+                "id_praticien" => $rdv->praticien,
                 "id_patient" => $rdv->patient,
                 "specialite_praticien" => $rdv->specialite_label,
                 "horaire" => $rdv->date,
@@ -49,10 +49,19 @@ class GetRendezVousAction extends AbstractAction
             return $response->withHeader('Content-Type','application/json')
             ->withStatus(200);
         } catch (ServiceRendezVousNotDataFoundException $e) {
-            $response->getBody()->write(json_encode(['error' => 'Rendez-vous non trouvé']));
-            return $response->withHeader('Content-Type', 'application/json')
-                            ->withStatus(404);
+            $errorMessage = $e->getMessage();
+            $errorCode = $e->getCode(); 
 
-    }
+            // Construire la réponse avec le message et le code d'erreur
+            $response->getBody()->write(json_encode(['error' => $errorMessage]));
+            return $response->withHeader('Content-Type', 'application/json')
+                    ->withStatus($errorCode);
+
+    }catch (\Exception $e) {
+        $response->getBody()->write(json_encode(['error' => 'Problème serveur']));
+        return $response->withHeader('Content-Type', 'application/json')
+            ->withStatus('500');
+
+}
 }
 }
