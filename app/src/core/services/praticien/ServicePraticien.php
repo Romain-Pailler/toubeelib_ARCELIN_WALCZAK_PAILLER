@@ -24,13 +24,12 @@ class ServicePraticien implements ServicePraticienInterface
     public function createPraticien(InputPraticienDTO $praticien): PraticienDTO
     {
         try {
-        // TODO : valider les données et créer l'entité
         $retour = new Praticien($praticien->nom,$praticien->prenom,$praticien->adresse,$praticien->tel); //new praticien
 
 
         $retour->setSpecialite($this->praticienRepository->getSpecialiteById($praticien->specialite)); //on doit set une specialite
         
-        $this->praticienRepository->getPraticienById($this->praticienRepository->save($retour));
+        $this->praticienRepository->save($retour);
         return new PraticienDTO($retour);
 
     } catch(RepositoryEntityNotFoundException $e) {

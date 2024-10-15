@@ -42,12 +42,18 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
     public function creerRendezvous(InputRendezVousDTO $rdv): RendezVousDTO
     {
-
-        //praticien ID valide ?
-        if($this->praticienRepository->getPraticienById($rdv->praticien)==null)throw new ServiceRendezVousNotDataFoundException('invalid Praticien ID');
-
-        //Specialite valide ?
-        if($this->praticienRepository->getPraticienById($rdv->praticien)->getSpecialite()->getId()!=$rdv->specialite)throw new ServiceRendezVousIncorrectDataException('invalid Specialite');
+        try {
+            $this->praticienRepository->getPraticienById($rdv->praticien);
+        } catch(RepositoryEntityNotFoundException $e) {
+            throw new ServiceRendezVousNotDataFoundException("Le praticien n'existe pas");
+        }
+        try {
+            if ($this->praticienRepository->getPraticienById($rdv->praticien)->getSpecialite()->getId()!=$rdv->specialite) {
+                throw new ServiceRendezVousIncorrectDataException();
+            }
+        } catch(ServiceRendezVousIncorrectDataException $e) {
+            throw new ServiceRendezVousIncorrectDataException('La spécialité ne correspond pas à celle du praticien');
+        }
 
         $retour = new RendezVous($rdv->praticien, $rdv->patient, $rdv->specialite, new \DateTimeImmutable($rdv->date));
 
@@ -158,27 +164,41 @@ class ServiceRendezVous implements ServiceRendezVousInterface
             $rdv = $this->rendezvousRepository->getRendezvousById($id);
             return new RendezVousDTO($rdv);
         } catch(RepositoryEntityNotFoundException $e) {
-
-            throw new ServiceRendezVousNotDataFoundException("Invalid RDV ID", 404, $e);
+            throw new ServiceRendezVousNotDataFoundException();
         }
     }
 
 
     public function annulerRendezvous(string $id_rdv, string $annulePar)
     {
-        $rdv = $this->rendezvousRepository->getRendezvousById($id_rdv);
-        if ($rdv->getStatut() === 'Honoré') {
-            throw new \DomainException('Le rendez-vous étant déjà honoré il ne peut pas être annulé');
+        try {
+            // Récupérer le rendez-vous par son ID
+            $rdv = $this->rendezvousRepository->getRendezvousById($id_rdv);
+        } catch (RepositoryEntityNotFoundException $e) {
+            // Lever une exception personnalisée si le rendez-vous n'existe pas
+            throw new ServiceRendezVousNotDataFoundException("Rendez-vous inexistant", 404);
         }
+
+        // Vérifier si le rendez-vous a déjà été honoré
+        if ($rdv->getStatut() === 'Honoré') {
+            throw new DomainException('Le rendez-vous étant déjà honoré, il ne peut pas être annulé');
+        }
+
+        // Vérifier qui annule le rendez-vous et mettre à jour le statut en conséquence
         if ($annulePar === 'patient') {
             $rdv->setStatut('Annulé par le patient');
         } elseif ($annulePar === 'praticien') {
             $rdv->setStatut('Annulé par le praticien');
         } else {
-            throw new \InvalidArgumentException('Annulation invalide');
+            // Lever une exception si la valeur fournie pour "annulerPar" est invalide
+            throw new \InvalidArgumentException('Annulation invalide : "annulerPar" doit etre "patient" ou "praticien"');
         }
+
+        // Sauvegarder les modifications dans le repository
         $this->rendezvousRepository->save($rdv);
-        $this->displayInLogger('Le rendez-vous *'.$id_rdv.'* a été annuler.');
+
+        // Enregistrer l'annulation dans les logs
+        $this->displayInLogger('Le rendez-vous *'.$id_rdv.'* a été annulé.');
     }
 
     public function marquerRendezvousHonore(string $id_rdv)

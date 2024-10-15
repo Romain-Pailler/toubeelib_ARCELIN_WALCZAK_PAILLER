@@ -27,25 +27,21 @@ class ModifRendezVousAction extends AbstractAction
         $parsedBody = $request->getParsedBody();
 
         try {
-            // Initialisation d'un tableau pour les valeurs modifiables
         $fieldsToUpdate = [];
 
-        // Vérifier si la spécialité est présente dans le body et la stocker sous forme de string
+        
         if (isset($parsedBody['specialite']) && is_string($parsedBody['specialite'])) {
             $fieldsToUpdate['specialite'] = $parsedBody['specialite'];
         }
 
-        // Vérifier si le patient est présent dans le body et le stocker sous forme de string
         if (isset($parsedBody['patient']) && is_string($parsedBody['patient'])) {
             $fieldsToUpdate['patient'] = $parsedBody['patient'];
         }
 
-        // Si le tableau est vide, retourner une erreur 400
         if (empty($fieldsToUpdate)) {
-            $response->getBody()->write(json_encode(['error' => 'Aucune donnée valide à mettre à jour']));
-            return $response->withHeader('Content-Type', 'application/json')
-                            ->withStatus(400);
+            throw new \InvalidArgumentException("Aucune donnée valide à mettre à jour.");
         }
+        
 
         // Appliquer les modifications en fonction des champs présents
         if (isset($fieldsToUpdate['specialite'])) {
@@ -62,7 +58,7 @@ class ModifRendezVousAction extends AbstractAction
             $res = [
                 "Rendez-Vous" => [
                     "id" => $rdv->ID,
-                    "id_praticient" => $rdv->praticien,
+                    "id_praticien" => $rdv->praticien,
                     "id_patient" => $rdv->patient,
                     "specialite_praticien" => $rdv->specialite_label,
                     "horaire" => $rdv->date,
@@ -90,8 +86,13 @@ class ModifRendezVousAction extends AbstractAction
             return $response->withHeader('Content-Type', 'application/json')
                             ->withStatus(404);
 
-        }catch (\Exception $e) {
-            // Pour toute autre erreur, retourner une erreur 500
+        }catch (\InvalidArgumentException $e) {
+            $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
+            return $response->withHeader('Content-Type', 'application/json')
+                            ->withStatus(400);
+        }
+        
+        catch (\Exception $e) {
             $response->getBody()->write(json_encode(['error' => 'Erreur interne du serveur']));
             return $response->withHeader('Content-Type', 'application/json')
                             ->withStatus(500);
