@@ -13,43 +13,59 @@ class ArrayRdvRepository implements RdvRepositoryInterface
 
     private array $rdvs = [];
 
-    public function __construct() {
+    public function __construct()
+    {
 
-            $r1 = new RendezVous('p1', 'pa1', 'A', \DateTimeImmutable::createFromFormat('Y-m-d H:i','2024-09-02 09:00'));
-            $r1->setID('r1');
-            $r2 = new RendezVous('p1', 'pa1', 'A', \DateTimeImmutable::createFromFormat('Y-m-d H:i','2024-09-02 10:00'));
-            $r2->setID('r2');
-            $r3 = new RendezVous('p2', 'pa1', 'A', \DateTimeImmutable::createFromFormat('Y-m-d H:i','2024-09-02 09:30'));
-            $r3->setID('r3');
+        $r1 = new RendezVous('p1', 'pa1', 'A', \DateTimeImmutable::createFromFormat('Y-m-d H:i', '2024-09-02 09:00'));
+        $r1->setID('r1');
+        $r2 = new RendezVous('p1', 'pa1', 'A', \DateTimeImmutable::createFromFormat('Y-m-d H:i', '2024-09-02 10:00'));
+        $r2->setID('r2');
+        $r3 = new RendezVous('p2', 'pa1', 'A', \DateTimeImmutable::createFromFormat('Y-m-d H:i', '2024-09-02 09:30'));
+        $r3->setID('r3');
 
-        $this->rdvs  = ['r1'=> $r1, 'r2'=>$r2, 'r3'=> $r3 ];
+        $this->rdvs  = ['r1' => $r1, 'r2' => $r2, 'r3' => $r3];
     }
 
 
 
 
-    public function getRendezvousById(string $id): Rendezvous{
+    public function getRendezvousById(string $id): Rendezvous
+    {
         $rdv = $this->rdvs[$id] ??
-        throw new RepositoryEntityNotFoundException("Rendezvous $id not found");
+            throw new RepositoryEntityNotFoundException("Rendezvous $id not found");
 
         return $rdv;
-        
     }
 
-    public function getRendezvousByPraticienId(string $id_prat): array {
+    public function getRendezvousByPatientId(string $id_pat): array
+    {
         $retour = [];
-    
+
+        foreach ($this->rdvs as $value) {
+            if ($value->patient === $id_pat) {
+                array_push($retour, $value);
+            }
+        }
+
+        return $retour;
+    }
+
+    public function getRendezvousByPraticienId(string $id_prat): array
+    {
+        $retour = [];
+
         foreach ($this->rdvs as $value) {
             if ($value->praticien === $id_prat) {
                 array_push($retour, $value);
             }
         }
-    
+
         return $retour;
     }
-    
 
-    public function save(Rendezvous $rdv): string{
+
+    public function save(Rendezvous $rdv): string
+    {
         $ID = Uuid::uuid4()->toString();
         $rdv->setID($ID);
         $this->rdvs[$ID] = $rdv;
@@ -60,10 +76,10 @@ class ArrayRdvRepository implements RdvRepositoryInterface
         if (!isset($this->rdvs[$id])) {
             throw new RepositoryEntityNotFoundException("Le rendez-vous avec l'ID $id n'a pas été trouvé.");
         }
-        
+
         $rdv = $this->rdvs[$id];
 
-        
+
         if (isset($fields['specialite'])) {
             $rdv->setSpecialite($fields['specialite']);
         }

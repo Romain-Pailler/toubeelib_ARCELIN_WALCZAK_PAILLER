@@ -200,6 +200,11 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         return false; // La date n'est pas dans les vacances
     }
 
+    public function rdvsDePatient(string $id_patient): array
+    {
+        return $this->rendezvousRepository->getRendezvousByPatientId($id_patient);
+    }
+
 
 
 
