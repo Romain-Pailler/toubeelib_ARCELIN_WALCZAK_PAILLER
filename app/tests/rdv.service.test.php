@@ -7,7 +7,7 @@ $service = new toubeelib\core\services\rdv\ServiceRendezVous(
     new \toubeelib\infrastructure\repositories\ArrayPraticienRepository()
 );
 
-$rdvdto = new \toubeelib\core\dto\InputRendezVousDTO('p1', 'pa1', 'A', '2024-10-03 09:00');
+$rdvdto = new \toubeelib\core\dto\InputRendezVousDTO('p1', 'pa1', 'A', '2024-10-02 09:00');
 
 print_r('Test 1 - Creation Rendez Vous ##########################################################');
 
@@ -23,6 +23,7 @@ try {
 print_r('Test 1 bis - Creation Rendez Vous ##########################################################');
 
 try {
+
     $rdv1 = $service->creerRendezvous(new \toubeelib\core\dto\InputRendezVousDTO('p1', 'pa1', 'A', '2024-10-02 09:00'));
 } catch (\toubeelib\core\services\rdv\ServiceRendezVousIncorrectDataException $e) {
     echo 'exception dans la récupération d\'un praticien :' . PHP_EOL;

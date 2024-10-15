@@ -56,8 +56,9 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         }
 
         try {
-            if (!in_array(\DateTimeImmutable::createFromFormat('Y-m-d H:i', $rdv->date), $this->listeDisposPraticienIndividuel($rdv->praticien, $rdv->date, $rdv->date))) {
-                print_r('la date--------------------' . $rdv->date);
+            print_r('la date--------------------' . $rdv->date);
+
+            if (!in_array(new DateTimeImmutable($rdv->date), $this->listeDisposPraticienIndividuel($rdv->praticien, $rdv->date, $rdv->date))) {
                 throw new ServiceRendezVousIncorrectDataException();
             }
         } catch (ServiceRendezVousIncorrectDataException $e) {
@@ -172,15 +173,8 @@ class ServiceRendezVous implements ServiceRendezVousInterface
                 }
 
                 if ($this->praticienEstDisponible($id_prat, $hour)) {
-
                     print_r($day);
-                    $retour[] = [
-                        'jour' => $day->format('l'), // Nom du jour (en anglais)
-                        'date' => $day->format('Y-m-d'), // Date du jour
-                        'heure' => $hour->format('H:i'), // Heure disponible
-                        'praticien_nom' => $praticien->nom, // Nom du praticien
-                        'praticien_prenom' => $praticien->prenom // Prénom du praticien
-                    ];
+                    array_push($retour, $day);
                 }
             }
         }
