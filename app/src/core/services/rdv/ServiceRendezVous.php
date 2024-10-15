@@ -18,7 +18,7 @@ use toubeelib\core\services\rdv\ServiceRendezVousNotDataFoundException;
 use Monolog\Logger; // Use the correct namespace for Logger
 use Monolog\Handler\StreamHandler; // Use the correct namespace for StreamHandler
 use Monolog\Handler\FirePHPHandler; // Use the correct namespace for FirePHPHandler
-
+use toubeelib\core\services\praticien\ServicePraticienInvalidDataException;
 
 class ServiceRendezVous implements ServiceRendezVousInterface
 {
@@ -53,6 +53,15 @@ class ServiceRendezVous implements ServiceRendezVousInterface
             }
         } catch (ServiceRendezVousIncorrectDataException $e) {
             throw new ServiceRendezVousIncorrectDataException('La spécialité ne correspond pas à celle du praticien');
+        }
+
+        try {
+            if (!in_array(\DateTimeImmutable::createFromFormat('Y-m-d H:i', $rdv->date), $this->listeDisposPraticienIndividuel($rdv->praticien, $rdv->date, $rdv->date))) {
+                print_r('la date--------------------' . $rdv->date);
+                throw new ServiceRendezVousIncorrectDataException();
+            }
+        } catch (ServiceRendezVousIncorrectDataException $e) {
+            throw new ServicePraticienInvalidDataException("La date est invalide.");
         }
 
 
@@ -163,6 +172,8 @@ class ServiceRendezVous implements ServiceRendezVousInterface
                 }
 
                 if ($this->praticienEstDisponible($id_prat, $hour)) {
+
+                    print_r($day);
                     $retour[] = [
                         'jour' => $day->format('l'), // Nom du jour (en anglais)
                         'date' => $day->format('Y-m-d'), // Date du jour
