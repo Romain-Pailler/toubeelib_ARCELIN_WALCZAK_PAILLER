@@ -1,4 +1,5 @@
 <?php
+
 namespace toubeelib\application\actions;
 
 use Psr\Http\Message\ResponseInterface;
@@ -27,34 +28,30 @@ class ModifRendezVousAction extends AbstractAction
         $parsedBody = $request->getParsedBody();
 
         try {
-            // Initialisation d'un tableau pour les valeurs modifiables
-        $fieldsToUpdate = [];
+            $fieldsToUpdate = [];
 
-        // Vérifier si la spécialité est présente dans le body et la stocker sous forme de string
-        if (isset($parsedBody['specialite']) && is_string($parsedBody['specialite'])) {
-            $fieldsToUpdate['specialite'] = $parsedBody['specialite'];
-        }
 
-        // Vérifier si le patient est présent dans le body et le stocker sous forme de string
-        if (isset($parsedBody['patient']) && is_string($parsedBody['patient'])) {
-            $fieldsToUpdate['patient'] = $parsedBody['patient'];
-        }
+            if (isset($parsedBody['specialite']) && is_string($parsedBody['specialite'])) {
+                $fieldsToUpdate['specialite'] = $parsedBody['specialite'];
+            }
 
-        // Si le tableau est vide, retourner une erreur 400
-        if (empty($fieldsToUpdate)) {
-            $response->getBody()->write(json_encode(['error' => 'Aucune donnée valide à mettre à jour']));
-            return $response->withHeader('Content-Type', 'application/json')
-                            ->withStatus(400);
-        }
+            if (isset($parsedBody['patient']) && is_string($parsedBody['patient'])) {
+                $fieldsToUpdate['patient'] = $parsedBody['patient'];
+            }
 
-        // Appliquer les modifications en fonction des champs présents
-        if (isset($fieldsToUpdate['specialite'])) {
-            $this->rdvService->changeSpecialite($idRdv, $fieldsToUpdate['specialite']);
-        }
+            if (empty($fieldsToUpdate)) {
+                throw new \InvalidArgumentException("Aucune donnée valide à mettre à jour.");
+            }
 
-        if (isset($fieldsToUpdate['patient'])) {
-            $this->rdvService->changePatient($idRdv, $fieldsToUpdate['patient']);
-        }
+
+            // Appliquer les modifications en fonction des champs présents
+            if (isset($fieldsToUpdate['specialite'])) {
+                $this->rdvService->changeSpecialite($idRdv, $fieldsToUpdate['specialite']);
+            }
+
+            if (isset($fieldsToUpdate['patient'])) {
+                $this->rdvService->changePatient($idRdv, $fieldsToUpdate['patient']);
+            }
             // Récupérer les informations mises à jour du rendez-vous après modifications
             $rdv = $this->rdvService->getRendezvousById($idRdv);
 
@@ -62,7 +59,7 @@ class ModifRendezVousAction extends AbstractAction
             $res = [
                 "Rendez-Vous" => [
                     "id" => $rdv->ID,
-                    "id_praticient" => $rdv->praticien,
+                    "id_praticien" => $rdv->praticien,
                     "id_patient" => $rdv->patient,
                     "specialite_praticien" => $rdv->specialite_label,
                     "horaire" => $rdv->date,
@@ -82,19 +79,20 @@ class ModifRendezVousAction extends AbstractAction
             // Ecrire la réponse JSON et retourner un code 200
             $response->getBody()->write(json_encode($res));
             return $response->withHeader('Content-Type', 'application/json')
-                            ->withStatus(200);
-
+                ->withStatus(200);
         } catch (ServiceRendezVousNotDataFoundException $e) {
             // Si le rendez-vous n'existe pas, retourner une erreur 404
             $response->getBody()->write(json_encode(['error' => 'Rendez-vous non trouvé']));
             return $response->withHeader('Content-Type', 'application/json')
-                            ->withStatus(404);
-
-        }catch (\Exception $e) {
-            // Pour toute autre erreur, retourner une erreur 500
+                ->withStatus(404);
+        } catch (\InvalidArgumentException $e) {
+            $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
+            return $response->withHeader('Content-Type', 'application/json')
+                ->withStatus(400);
+        } catch (\Exception $e) {
             $response->getBody()->write(json_encode(['error' => 'Erreur interne du serveur']));
             return $response->withHeader('Content-Type', 'application/json')
-                            ->withStatus(500);
+                ->withStatus(500);
         }
     }
 }
