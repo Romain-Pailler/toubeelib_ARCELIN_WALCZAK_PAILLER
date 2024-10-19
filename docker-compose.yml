@@ -34,6 +34,15 @@ services:
     volumes:
       - ./app/sql:/var/sql
       - ./init-multiple-db.sh:/docker-entrypoint-initdb.d/init-multiple-db.sh
+  #
+  # service administration des bases sql
+  #
+  adminer:
+    image: adminer
+    ports:
+      - '8080:8080'
+    networks:
+      - toubeelib.net
 
 #  patient.db:
 #    image: 'postgres:latest'
@@ -64,13 +73,5 @@ services:
 #      - toubeelib.net
 #    volumes:
 #      - ./app/sql:/var/sql'
-  #
-  # service administration des bases sql
-  #
-  adminer:
-    image: adminer
-    ports:
-      - '8080:8080'
-    networks:
-      - toubeelib.net
+
 

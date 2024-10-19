@@ -22,4 +22,29 @@ class Patient extends Entity
         $this->tel = $tel;
     }
 
+    public function setNom(string $nom): void
+    {
+        $this->nom = $nom;
+    }
+
+    public function setPrenom(string $prenom): void
+    {
+        $this->prenom = $prenom;
+    }
+
+    public function setAdresse(string $adresse): void
+    {
+        $this->adresse = $adresse;
+    }
+
+    public function setDateNaissance(string $dateNaissance): void
+    {
+        $this->dateNaissance = $dateNaissance;
+    }
+
+    public function setTel(string $tel): void
+    {
+        $this->tel = $tel;
+    }
+
 }

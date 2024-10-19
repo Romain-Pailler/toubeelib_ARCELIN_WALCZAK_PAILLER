@@ -8,12 +8,12 @@
 
 
 --PostgreSQL FDW commands utils
-DROP FOREIGN TABLE IF EXISTS praticien;
-DROP FOREIGN TABLE IF EXISTS patient;
-DROP USER MAPPING IF EXISTS FOR current_user SERVER praticien_server;
-DROP USER MAPPING IF EXISTS FOR current_user SERVER patient_server;
-DROP SERVER IF EXISTS praticien_server CASCADE;
-DROP SERVER IF EXISTS patient_server CASCADE;
+--DROP FOREIGN TABLE IF EXISTS praticien;
+--DROP FOREIGN TABLE IF EXISTS patient;
+--DROP USER MAPPING IF EXISTS FOR current_user SERVER praticien_server;
+--DROP USER MAPPING IF EXISTS FOR current_user SERVER patient_server;
+--DROP SERVER IF EXISTS praticien_server CASCADE;
+--DROP SERVER IF EXISTS patient_server CASCADE;
 
 
 --Praticien DB
@@ -36,48 +36,6 @@ CREATE TABLE Specialite (
 
 
 --RDV DB PostgreSQL FDW
-
-CREATE EXTENSION postgres_fdw;
-
-CREATE SERVER praticien_server
-    FOREIGN DATA WRAPPER postgres_fdw
-    OPTIONS (host 'praticien.db', dbname 'praticien', port '5433');
-
-CREATE USER MAPPING FOR current_user
-    SERVER praticien_server
-    OPTIONS (user 'root', password 'root');
-
-CREATE FOREIGN TABLE praticien (
-    id SERIAL,
-    nom VARCHAR(100),
-    prenom VARCHAR(100),
-    adresse VARCHAR(255),
-    tel VARCHAR(20),
-    specialite_id INTEGER
-)
-SERVER praticien_server
-OPTIONS (schema_name 'public', table_name 'Praticien');
-
-
-CREATE SERVER patient_server
-    FOREIGN DATA WRAPPER postgres_fdw
-    OPTIONS (host 'patient.db', dbname 'patients', port '5432');
-
-CREATE USER MAPPING FOR current_user
-    SERVER patient_server
-    OPTIONS (user 'root', password 'root');
-
-CREATE FOREIGN TABLE patient (
-    id SERIAL,
-    nom VARCHAR(100),
-    prenom VARCHAR(100),
-    adresse VARCHAR(255),
-    tel VARCHAR(20),
-    date_naissance DATE
-)
-SERVER patient_server
-OPTIONS (schema_name 'public', table_name 'Patients');
-
 
 CREATE TABLE RendezVous (
     id SERIAL PRIMARY KEY,
@@ -104,3 +62,11 @@ CREATE TABLE Patients (
     date_naissance DATE
 );
 
+--Users DB
+
+CREATE TABLE Users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(100) NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    role VARCHAR(50) NOT NULL
+);
