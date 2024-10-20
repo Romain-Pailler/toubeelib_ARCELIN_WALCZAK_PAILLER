@@ -7,6 +7,7 @@ use \toubeelib\core\services\rdv\ServiceRendezVousInterface;
 use \toubeelib\core\services\praticien\ServicePraticienInterface;
 use \toubeelib\application\actions\GetRendezVousAction;
 use \toubeelib\application\actions\GetPraticiensAction;
+use \toubeelib\application\actions\GetDisponibilitesPraticienAction;
 use \toubeelib\application\actions\ModifRendezVousAction;
 use \toubeelib\application\actions\CreateRendezVousAction;
 use \toubeelib\application\actions\DeleteRendezVousAction;
@@ -43,6 +44,9 @@ return [
     },
     GetPraticiensAction::class=> function(ContainerInterface $c){
         return new GetPraticiensAction($c->get(ServicePraticienInterface::class));
+    },
+    GetDisponibilitesPraticienAction::class=> function(ContainerInterface $c){
+        return new GetDisponibilitesPraticienAction($c->get(ServiceRendezVousInterface::class));
     },
     ModifRendezVousAction::class => function(ContainerInterface $c){
         return new ModifRendezVousAction($c->get(ServiceRendezVousInterface::class));

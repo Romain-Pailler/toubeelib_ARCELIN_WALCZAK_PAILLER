@@ -152,13 +152,13 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         foreach ($period_day as $day) {
             // Vérifie si le jour est un samedi (6) ou un dimanche (7) ou un jour de vacances
             if (in_array($day->format('N'), $praticien->jours_semaine_off)) {
-                var_dump($day->format('Y-m-d') . " est un jour non ouvré.");
+                //var_dump($day->format('Y-m-d') . " est un jour non ouvré.");
                 continue;
             }
 
             // Vérification des périodes de vacances
             if ($this->dateEstVacance($day, $praticien->vacance_period)) {
-                var_dump($day->format('Y-m-d') . " est en vacances.");
+                //var_dump($day->format('Y-m-d') . " est en vacances.");
                 continue;
             }
 
@@ -193,7 +193,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
             $start = new DateTimeImmutable($period['start']);
             $end = new DateTimeImmutable($period['end']);
             if ($date >= $start && $date <= $end->modify('+1 day')) {
-                var_dump($date->format('Y-m-d'), " est dans la période: {$start->format('Y-m-d')} à {$end->format('Y-m-d')}");
+                //var_dump($date->format('Y-m-d'), " est dans la période: {$start->format('Y-m-d')} à {$end->format('Y-m-d')}");
                 return true; // La date est dans les vacances
             }
         }
