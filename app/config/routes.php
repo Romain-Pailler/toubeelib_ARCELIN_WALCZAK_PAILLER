@@ -18,6 +18,7 @@ return function( \Slim\App $app):\Slim\App {
 
     $app->post('/praticiens',\toubeelib\application\actions\CreatePraticienAction::class);
 
+    $app->get('/praticiens', \toubeelib\application\actions\GetPraticiensAction::class);
 
     $app->options('/{routes:.+}',
         function( Request $rq,
