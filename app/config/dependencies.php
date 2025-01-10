@@ -14,6 +14,7 @@ use \toubeelib\application\actions\DeleteRendezVousAction;
 use \toubeelib\application\actions\CreatePraticienAction;
 use toubeelib\infrastructure\repositories\ArrayPraticienRepository;
 use toubeelib\infrastructure\repositories\ArrayRdvRepository;
+use toubeelib\infrastructure\PDO\PDOPraticien;
 
 return [
 
@@ -39,7 +40,7 @@ return [
 
     // Répertoires
     PraticienRepositoryInterface::class => function (ContainerInterface $c) {
-        return new ArrayPraticienRepository();
+        return new PDOPraticien($c->get(PDO::class));
     },
 
     RdvRepositoryInterface::class => function (ContainerInterface $c) {
