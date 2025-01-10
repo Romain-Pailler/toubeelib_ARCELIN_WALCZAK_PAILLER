@@ -37,6 +37,25 @@ return [
             throw new \RuntimeException('Erreur de connexion à la base de données : ' . $e->getMessage());
         }
     },
+    // Connexion à la base de données PostgreSQL
+    PDO::class => function (): PDO {
+        $host = 'toubeelib.db'; // Nom du service PostgreSQL dans docker-compose.yml
+        $port = '5432'; // Port standard PostgreSQL
+        $dbname = 'patient'; // Nom de la base de données
+        $user = 'root'; // Utilisateur
+        $password = 'root'; // Mot de passe
+
+        $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
+
+        try {
+            return new PDO($dsn, $user, $password, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            ]);
+        } catch (\PDOException $e) {
+            throw new \RuntimeException('Erreur de connexion à la base de données : ' . $e->getMessage());
+        }
+    },
 
     // Répertoires
     PraticienRepositoryInterface::class => function (ContainerInterface $c) {

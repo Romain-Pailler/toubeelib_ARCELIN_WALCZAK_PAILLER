@@ -23,6 +23,7 @@ class ServicePatient implements ServicePatientInterface
     public function createPatient(InputPatientDTO $p): PatientDTO
     {
         $patient = new Patient($p->nom, $p->prenom, $p->adresse, $p->dateNaissance, $p->tel);
+        $this->patientRepository->getPatientById(($this->patientRepository->save($patient)));
         return new PatientDTO($patient);
     }
 
@@ -36,7 +37,7 @@ class ServicePatient implements ServicePatientInterface
         }
     }
 
-/*
+    /*
     public function updatePatient(string $id, InputPatientDTO $p): PatientDTO
     {
 
@@ -55,6 +56,4 @@ class ServicePatient implements ServicePatientInterface
     {
         return $this->patientRepository->deletePatient($id);
     }
-
-
 }
