@@ -7,6 +7,7 @@ use DateInterval;
 use DatePeriod;
 use DateTimeImmutable;
 use DomainException;
+use Exception;
 use toubeelib\core\domain\entities\rdv\RendezVous;
 use toubeelib\core\dto\InputRendezVousDTO;
 use toubeelib\core\dto\RendezVousDTO;
@@ -41,40 +42,46 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
     public function creerRendezvous(InputRendezVousDTO $rdv): RendezVousDTO
     {
-
         try {
             $this->praticienRepository->getPraticienById($rdv->praticien);
         } catch (RepositoryEntityNotFoundException $e) {
             throw new ServiceRendezVousNotDataFoundException("Le praticien n'existe pas");
         }
+
         try {
             if ($this->praticienRepository->getPraticienById($rdv->praticien)->getSpecialite()->getId() != $rdv->specialite) {
-                throw new ServiceRendezVousIncorrectDataException();
+                throw new ServiceRendezVousIncorrectDataException('La spécialité ne correspond pas à celle du praticien');
             }
         } catch (ServiceRendezVousIncorrectDataException $e) {
             throw new ServiceRendezVousIncorrectDataException('La spécialité ne correspond pas à celle du praticien');
         }
 
         try {
-            print_r($this->listeDisposPraticienIndividuel($rdv->praticien, $rdv->date, $rdv->date));
-
             if (!in_array(new DateTimeImmutable($rdv->date), $this->listeDisposPraticienIndividuel($rdv->praticien, $rdv->date, $rdv->date))) {
-                print_r('----------------------------------probleme de date');
-                throw new ServiceRendezVousIncorrectDataException();
+                throw new ServicePraticienInvalidDataException("La date est invalide.");
             }
         } catch (ServiceRendezVousIncorrectDataException $e) {
             throw new ServicePraticienInvalidDataException("La date est invalide.");
         }
 
+        // Création de l'objet RendezVous
+        $rendezvous = new RendezVous($rdv->praticien, $rdv->patient, $rdv->specialite, new \DateTimeImmutable($rdv->date));
 
-        $retour = new RendezVous($rdv->praticien, $rdv->patient, $rdv->specialite, new \DateTimeImmutable($rdv->date));
+        // Vérifier si l'objet RendezVous est null ou incomplet
+        if ($rendezvous === null) {
+            throw new Exception('Erreur lors de la création du rendez-vous : l\'objet RendezVous est invalide.');
+        }
 
-        $this->displayInLogger('Rendez-vous créer : Praticien -> ' . $rdv->praticien . ' / Patient -> ' . $rdv->patient . ' / Specialite -> ' . $rdv->specialite);
+        // Enregistrer le rendez-vous
+        $this->rendezvousRepository->save($rendezvous);
 
-        $this->rendezvousRepository->save($retour);
+        // Logging
+        $this->displayInLogger('Rendez-vous créé : Praticien -> ' . $rdv->praticien . ' / Patient -> ' . $rdv->patient . ' / Specialite -> ' . $rdv->specialite);
 
-        return new RendezVousDTO($retour);
+        return new RendezVousDTO($rendezvous);
     }
+
+
 
 
     public function listeDisposPraticien(string $id_prat, string $date_deb, string $date_fin): array

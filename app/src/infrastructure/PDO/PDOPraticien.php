@@ -122,13 +122,25 @@ class PDOPraticien implements PraticienRepositoryInterface
 
         // Si aucun praticien n'est trouvé
         if ($stmt->rowCount() === 0) {
-            //throw new RepositoryEntityNotFoundException("Praticien non trouvé.");
+            throw new Exception("Praticien non trouvé.");
         }
 
         $data = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-        // Crée l'objet Praticien avec les données récupérées
-        return new Praticien($data['id'], $data['nom'], $data['prenom'], $data['adresse'], $data['tel'], new Specialite($data['specialite_id'], "", ""));
+        $sqlSpe = "SELECT * FROM specialite WHERE id = :id";
+        $spe_id = $data['specialite_id'];
+        $stmtSpe = $this->pdo->prepare($sqlSpe);
+        $stmtSpe->bindParam(':id', $spe_id, \PDO::PARAM_STR);
+        $stmtSpe->execute();
+
+        $dataSpe = $stmtSpe->fetch(\PDO::FETCH_ASSOC);
+
+
+        $prat = new Praticien($data['nom'], $data['prenom'], $data['adresse'], $data['tel']);
+        $spe = new Specialite($data['specialite_id'], $dataSpe['label'], $dataSpe['description']);
+
+        $prat->setSpecialite($spe);
+        return $prat;
     }
 
     public function getPraticiensBySpecialite(string $specialite): array

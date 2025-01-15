@@ -2,12 +2,25 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$service = new toubeelib\core\services\rdv\ServiceRendezVous(
-    new \toubeelib\infrastructure\repositories\ArrayRdvRepository(),
-    new \toubeelib\infrastructure\repositories\ArrayPraticienRepository()
-);
+// Inclure le fichier de dépendances qui retourne le conteneur
+$container = require_once __DIR__ . '/../config/dependencies.php'; // Remplace par le bon chemin
 
-$rdvdto = new \toubeelib\core\dto\InputRendezVousDTO('p1', 'pa1', 'A', '2024-10-02 09:00');
+// Récupérer la Closure qui crée l'objet PDO et l'exécuter pour obtenir l'instance de PDO
+$pdoRDVClosure = $container['pdo.rdv'];
+$pdoRDV = $pdoRDVClosure();
+
+$pdoPraticienClosure = $container['pdo.praticien'];
+$pdoPraticien = $pdoPraticienClosure();
+
+// Créer le repository PDOPraticien en lui passant l'objet PDO
+$pdoRendezVousRepository = new \toubeelib\infrastructure\PDO\PDORendezVous($pdoRDV);
+
+$pdoPraticienRepository = new \toubeelib\infrastructure\PDO\PDOPraticien($pdoPraticien);
+
+// Créer le service
+$service = new \toubeelib\core\services\rdv\ServiceRendezVous($pdoRendezVousRepository, $pdoPraticienRepository);
+
+$rdvdto = new \toubeelib\core\dto\InputRendezVousDTO('1', '1', 'A', '2024-10-02 09:30');
 
 
 
@@ -22,6 +35,7 @@ try {
 }
 
 
+/*
 print_r('Test 1 bis - Creation Rendez Vous ##########################################################');
 
 try {
@@ -113,3 +127,5 @@ try {
     echo 'exception dans la récupération d\'un praticien :' . PHP_EOL;
     echo $e->getMessage() . PHP_EOL;
 }
+
+*/
