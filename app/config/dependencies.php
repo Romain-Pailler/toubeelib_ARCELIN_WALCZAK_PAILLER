@@ -80,7 +80,7 @@ return [
 
     // Répertoires
     PraticienRepositoryInterface::class => function (ContainerInterface $c) {
-        return new PDOPraticien($c['pdo.praticien']);
+        return new PDOPraticien($c->get('pdo.praticien'));
     },
 
     RdvRepositoryInterface::class => function (ContainerInterface $c) {
@@ -106,7 +106,7 @@ return [
         return new GetRendezVousAction($c->get(ServiceRendezVousInterface::class));
     },
     GetPraticiensAction::class => function (ContainerInterface $c) {
-        return new GetPraticiensAction($c->get(ServicePraticienInterface::class), $c->get(PDO::class));
+        return new GetPraticiensAction($c->get(ServicePraticienInterface::class));
     },
     GetDisponibilitesPraticienAction::class => function (ContainerInterface $c) {
         return new GetDisponibilitesPraticienAction($c->get(ServiceRendezVousInterface::class));

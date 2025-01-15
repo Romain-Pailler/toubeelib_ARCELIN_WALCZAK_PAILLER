@@ -43,6 +43,19 @@ services:
       - '8080:8080'
     networks:
       - toubeelib.net
+       # API Gateway
+  api.gateway:
+    image: 'php:8.3-cli'
+    ports:
+      - '55324:80'
+    volumes:
+      - ./gateway:/var/gateway
+    working_dir: /var/gateway
+    networks:
+      - toubeelib.net
+    depends_on:
+      - api.toubeelib
+    command: php -S 0.0.0.0:80 -t /var/gateway
 
 #  patient.db:
 #    image: 'postgres:latest'

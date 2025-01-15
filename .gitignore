@@ -3,8 +3,6 @@
 .vscode/
 .DS_STORE
 /coverage/
-# Vendor
-/vendor/
 # Logs
 /app/logs/*
 !/app/logs/README.md
@@ -17,4 +15,6 @@ cache.properties
 composer.phar
 composer.lock
 
+
+/app/vendor/
 *.env

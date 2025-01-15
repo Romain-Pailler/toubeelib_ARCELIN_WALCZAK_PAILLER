@@ -1,5 +1,4 @@
-    <?php
-
+<?php
     namespace toubeelib\application\middlewares;
 
     use Psr\Http\Message\ResponseInterface as Response;
