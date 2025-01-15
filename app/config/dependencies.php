@@ -17,13 +17,13 @@ use toubeelib\infrastructure\repositories\ArrayRdvRepository;
 
 return [
 
-    // Connexion à la base de données PostgreSQL
-    PDO::class => function (): PDO {
-        $host = 'toubeelib.db'; // Nom du service PostgreSQL dans docker-compose.yml
-        $port = '5432'; // Port standard PostgreSQL
-        $dbname = 'praticien'; // Nom de la base de données
-        $user = 'root'; // Utilisateur
-        $password = 'root'; // Mot de passe
+    // Connexion principale à la base de données PostgreSQL
+    'pdo.rdv' => function (): PDO {
+        $host = 'toubeelib.db';
+        $port = '5432';
+        $dbname = 'rdv';
+        $user = 'root';
+        $password = 'root';
 
         $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
 
@@ -33,9 +33,50 @@ return [
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             ]);
         } catch (\PDOException $e) {
-            throw new \RuntimeException('Erreur de connexion à la base de données : ' . $e->getMessage());
+            throw new \RuntimeException('Erreur de connexion à la base de données principale : ' . $e->getMessage());
         }
     },
+
+    // Deuxième connexion PDO
+    'pdo.praticien' => function (): PDO {
+        $host = 'toubeelib.db';
+        $port = '5432';
+        $dbname = 'praticien';
+        $user = 'root';
+        $password = 'root';
+
+        $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
+
+        try {
+            return new PDO($dsn, $user, $password, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            ]);
+        } catch (\PDOException $e) {
+            throw new \RuntimeException('Erreur de connexion à la base secondaire : ' . $e->getMessage());
+        }
+    },
+
+    // Troisième connexion PDO
+    'pdo.patient' => function (): PDO {
+        $host = 'toubeelib.db';
+        $port = '5432';
+        $dbname = 'patient';
+        $user = 'root';
+        $password = 'root';
+
+        $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
+
+        try {
+            return new PDO($dsn, $user, $password, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            ]);
+        } catch (\PDOException $e) {
+            throw new \RuntimeException('Erreur de connexion à la base tertiaire : ' . $e->getMessage());
+        }
+    },
+
 
     // Répertoires
     PraticienRepositoryInterface::class => function (ContainerInterface $c) {
