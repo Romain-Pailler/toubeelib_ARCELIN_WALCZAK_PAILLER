@@ -37,12 +37,16 @@ class GetPraticiensAction extends AbstractAction
             // Transformation des données en tableau
             $res = array_map(function ($praticien) {
                 return [
-                    'id' => $praticien->ID,
-                    'nom' => $praticien->nom,
-                    'prenom' => $praticien->prenom,
-                    'specialite' => $praticien->specialite->label,
-                    'adresse' => $praticien->adresse,
-                    'telephone' => $praticien->tel,
+                    'id' => $praticien->getId(),
+                    'nom' => $praticien->getNom(),
+                    'prenom' => $praticien->getPrenom(),
+                    'specialite' => $praticien->getSpecialite() ? [
+                        'id' => $praticien->getSpecialite()->getId(),
+                        'label' => $praticien->getSpecialite()->label,
+                        'description' => $praticien->getSpecialite()->description,
+                    ] : null,
+                    'adresse' => $praticien->getAdresse(),
+                    'telephone' => $praticien->getTel(),
                 ];
             }, $praticiens);
 

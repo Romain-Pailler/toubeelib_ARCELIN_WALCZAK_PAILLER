@@ -145,51 +145,71 @@ class PDOPraticien implements PraticienRepositoryInterface
 
     public function getPraticiensBySpecialite(string $specialite): array
     {
-        $sql = "SELECT p.* FROM praticien p 
-            JOIN specialite s ON p.specialite_id = s.id 
-            WHERE s.label = :specialite";
-
+        $sql = "SELECT p.*, s.id as specialite_id, s.label as specialite_label, s.description as specialite_description
+                FROM praticien p
+                JOIN specialite s ON p.specialite_id = s.id
+                WHERE s.label = :specialite";
+    
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':specialite', $specialite, \PDO::PARAM_STR);
         $stmt->execute();
-
+    
         $praticiens = [];
-
+    
         while ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $praticiens[] = new Praticien(
-                $data['id'],
+            // Crée une instance de la spécialité
+            $specialiteObj = new Specialite(
+                $data['specialite_id'],
+                $data['specialite_label'],
+                $data['specialite_description']
+            );
+    
+            // Crée une instance de praticien
+            $praticien = new Praticien(
                 $data['nom'],
                 $data['prenom'],
                 $data['adresse'],
-                $data['tel'],
-                new Specialite($data['specialite_id'], "", "")
+                $data['tel']
             );
+    
+            $praticien->setID($data['id']);
+            $praticien->setSpecialite($specialiteObj);
+    
+            // Ajoute le praticien au tableau
+            $praticiens[] = $praticien;
         }
-
+    
         return $praticiens;
     }
+    
 
     public function getPraticiensByCity(string $city): array
     {
         $sql = "SELECT * FROM praticien WHERE adresse LIKE :city";
-
+    
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(':city', "%$city%", \PDO::PARAM_STR);
         $stmt->execute();
-
+    
         $praticiens = [];
-
+    
         while ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $praticiens[] = new Praticien(
-                $data['id'],
+            $specialite = $this->getSpecialiteById($data['specialite_id']); // Récupère la spécialité associée
+    
+            $praticien = new Praticien(
                 $data['nom'],
                 $data['prenom'],
                 $data['adresse'],
-                $data['tel'],
-                new Specialite($data['specialite_id'], "", "")
+                $data['tel']
             );
+    
+            $praticien->setID($data['id']);
+            $praticien->setSpecialite($specialite);
+    
+            $praticiens[] = $praticien;
         }
-
+    
         return $praticiens;
     }
+    
 }
