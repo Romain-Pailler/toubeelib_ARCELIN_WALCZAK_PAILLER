@@ -234,15 +234,6 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
 
 
-    public function changePatient(string $id, string $new_patient)
-    {
-
-        $rdv = $this->rendezvousRepository->getRendezvousById($id);
-
-        $rdv->setPatient($new_patient);
-
-        $this->displayInLogger('Le patient du rendez-vous *' . $id . '* devient : *' . $new_patient . '*');
-    }
 
 
     public function displayInLogger(string $message)
@@ -261,7 +252,22 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
         $rdv->setSpecialite($new_spe);
 
+        $this->rendezvousRepository->save($rdv);
+
         $this->displayInLogger('La specialite du rendez-vous *' . $id . '* devient : *' . $new_spe . '*');
+    }
+
+
+    public function changePatient(string $id, string $new_patient)
+    {
+
+        $rdv = $this->rendezvousRepository->getRendezvousById($id);
+
+        $rdv->setPatient($new_patient);
+
+        $this->rendezvousRepository->save($rdv);
+
+        $this->displayInLogger('Le patient du rendez-vous *' . $id . '* devient : *' . $new_patient . '*');
     }
 
 

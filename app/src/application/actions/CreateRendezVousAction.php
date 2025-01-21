@@ -1,6 +1,8 @@
 <?php
+
 namespace toubeelib\application\actions;
 
+use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use toubeelib\core\services\rdv\ServiceRendezVousInterface;
@@ -21,69 +23,68 @@ class CreateRendezVousAction extends AbstractAction
 
         try {
             $fieldsToUpdate = [];
-        if (isset($parsedBody['specialite']) && is_string($parsedBody['specialite'])) {
-            $fieldsToUpdate['specialite'] = $parsedBody['specialite'];
-        }
+            if (isset($parsedBody['specialite']) && is_string($parsedBody['specialite'])) {
+                $fieldsToUpdate['specialite'] = $parsedBody['specialite'];
+            }
 
-        if (isset($parsedBody['patient']) && is_string($parsedBody['patient'])) {
-            $fieldsToUpdate['patient'] = $parsedBody['patient'];
-        }
-        if (isset($parsedBody['praticien']) && is_string($parsedBody['praticien'])) {
-            $fieldsToUpdate['praticien'] = $parsedBody['praticien'];
-        }
-        if (isset($parsedBody['date']) && strtotime($parsedBody['date'])) {
-            $fieldsToUpdate['date'] = $parsedBody['date'];
-        }
-        if (empty($fieldsToUpdate)) {
-            throw new \InvalidArgumentException("Aucune donnée valide à mettre à jour.");
-        }
-        $rdvdto = new \toubeelib\core\dto\InputRendezVousDTO($fieldsToUpdate['praticien'], $fieldsToUpdate['patient'], $fieldsToUpdate['specialite'], $fieldsToUpdate['date']);
+            if (isset($parsedBody['patient']) && is_string($parsedBody['patient'])) {
+                $fieldsToUpdate['patient'] = $parsedBody['patient'];
+            }
+            if (isset($parsedBody['praticien']) && is_string($parsedBody['praticien'])) {
+                $fieldsToUpdate['praticien'] = $parsedBody['praticien'];
+            }
+            if (isset($parsedBody['date']) && strtotime($parsedBody['date'])) {
+                $fieldsToUpdate['date'] = $parsedBody['date'];
+            }
+            if (empty($fieldsToUpdate)) {
+                throw new \InvalidArgumentException("Aucune donnée valide à mettre à jour.");
+            }
+            $rdvdto = new \toubeelib\core\dto\InputRendezVousDTO($fieldsToUpdate['praticien'], $fieldsToUpdate['patient'], $fieldsToUpdate['specialite'], $fieldsToUpdate['date']);
 
             $rdv = $this->rdvRepo->creerRendezvous($rdvdto);
-            $res = ["Rendez-Vous" =>[
+            $res = ["Rendez-Vous" => [
                 "id" => $rdv->ID,
                 "id_praticien" => $rdv->praticien,
                 "id_patient" => $rdv->patient,
                 "specialite_praticien" => $rdv->specialite_label,
                 "horaire" => $rdv->date,
                 "statut" => $rdv->statut,
-            ],"links" => [
-                "self"=> [
-                    "href"=> "/rdvs/" . $rdv->ID
+            ], "links" => [
+                "self" => [
+                    "href" => "/rdvs/" . $rdv->ID
                 ],
-                "modifier"=>[
-                    "href"=> "/rdvs/" . $rdv->ID
+                "modifier" => [
+                    "href" => "/rdvs/" . $rdv->ID
                 ],
-                "annuler"=>[
-                    "href"=> "/rdvs/" . $rdv->ID
+                "annuler" => [
+                    "href" => "/rdvs/" . $rdv->ID
                 ],
-                "praticien"=>[
-                    "href"=> "/praticiens/" . $rdv->praticien
+                "praticien" => [
+                    "href" => "/praticiens/" . $rdv->praticien
                 ],
-                "patient"=>[
-                    "href"=> "/patients/" . $rdv->patient
+                "patient" => [
+                    "href" => "/patients/" . $rdv->patient
                 ],
-                ]];
+            ]];
             $response->getBody()->write(json_encode($res));
-            return $response->withHeader('Content-Type','application/json')
-            ->withStatus(201);
-            }catch(ServiceRendezVousNotDataFoundException $e){
-                $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
-                return $response->withHeader('Content-Type', 'application/json')
-                                ->withStatus(404);
-            }catch(ServiceRendezVousIncorrectDataException $e){
-                $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
-                return $response->withHeader('Content-Type', 'application/json')
-                                ->withStatus(402);
-            } catch (\Exception $e) {
-                $response->getBody()->write(json_encode(['error' => 'Erreur interne du serveur']));
-                return $response->withHeader('Content-Type', 'application/json')
-                                ->withStatus(500);
-            }catch (\InvalidArgumentException $e) {
-                $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
-                return $response->withHeader('Content-Type', 'application/json')
-                                ->withStatus(400);
-            } 
-            
-}
+            return $response->withHeader('Content-Type', 'application/json')
+                ->withStatus(201);
+        } catch (ServiceRendezVousNotDataFoundException $e) {
+            $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
+            return $response->withHeader('Content-Type', 'application/json')
+                ->withStatus(404);
+        } catch (Exception $e) {
+            $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
+            return $response->withHeader('Content-Type', 'application/json')
+                ->withStatus(402);
+        } catch (\Exception $e) {
+            $response->getBody()->write(json_encode(['error' => 'Erreur interne du serveur']));
+            return $response->withHeader('Content-Type', 'application/json')
+                ->withStatus(500);
+        } catch (\InvalidArgumentException $e) {
+            $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
+            return $response->withHeader('Content-Type', 'application/json')
+                ->withStatus(400);
+        }
+    }
 }

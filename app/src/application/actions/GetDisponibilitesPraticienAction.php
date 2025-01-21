@@ -57,25 +57,22 @@ class GetDisponibilitesPraticienAction extends AbstractAction
 
             $response->getBody()->write(json_encode($res));
             return $response->withHeader('Content-Type', 'application/json')
-                            ->withStatus(200);
-
+                ->withStatus(200);
         } catch (ServiceRendezVousIncorrectDataException $e) {
             // Gestion des erreurs de validation
             $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
             return $response->withHeader('Content-Type', 'application/json')
-                            ->withStatus(400);
-
+                ->withStatus(400);
         } catch (RepositoryEntityNotFoundException $e) {
             // Si le praticien n'est pas trouvé
             $response->getBody()->write(json_encode(['error' => 'Praticien non trouvé']));
             return $response->withHeader('Content-Type', 'application/json')
-                            ->withStatus(404);
-
+                ->withStatus(404);
         } catch (\Exception $e) {
             // Gestion des erreurs génériques
             $response->getBody()->write(json_encode(['error' => 'Erreur interne du serveur : ' . $e->getMessage()]));
             return $response->withHeader('Content-Type', 'application/json')
-                            ->withStatus(500);
+                ->withStatus(500);
         }
     }
 }

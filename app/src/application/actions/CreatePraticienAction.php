@@ -1,4 +1,5 @@
 <?php
+
 namespace toubeelib\application\actions;
 
 use Psr\Http\Message\ResponseInterface;
@@ -91,31 +92,29 @@ class CreatePraticienAction extends AbstractAction
 
             $response->getBody()->write(json_encode($res));
             return $response->withHeader('Content-Type', 'application/json')
-                            ->withStatus(201);
-
+                ->withStatus(201);
         } catch (ServicePraticienInvalidDataException $e) {
             // Gestion des erreurs liées aux données invalides
             $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
             return $response->withHeader('Content-Type', 'application/json')
-                            ->withStatus(401); // Unprocessable Entity pour les erreurs de validation
+                ->withStatus(401); // Unprocessable Entity pour les erreurs de validation
 
         } catch (RepositoryEntityNotFoundException $e) {
             // Gestion des erreurs liées à des entités non trouvées
             $response->getBody()->write(json_encode(['error' => 'Ressource non trouvée : ' . $e->getMessage()]));
             return $response->withHeader('Content-Type', 'application/json')
-                            ->withStatus(404);
-
+                ->withStatus(404);
         } catch (\InvalidArgumentException $e) {
             // Gestion des erreurs d'argument
             $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
             return $response->withHeader('Content-Type', 'application/json')
-                            ->withStatus(400); // Bad Request pour des données invalides
+                ->withStatus(400); // Bad Request pour des données invalides
 
         } catch (\Exception $e) {
             // Gestion des autres erreurs non anticipées
             $response->getBody()->write(json_encode(['error' => 'Erreur interne du serveur : ' . $e->getMessage()]));
             return $response->withHeader('Content-Type', 'application/json')
-                            ->withStatus(500);
+                ->withStatus(500);
         }
     }
 }

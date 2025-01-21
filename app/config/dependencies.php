@@ -12,9 +12,8 @@ use \toubeelib\application\actions\ModifRendezVousAction;
 use \toubeelib\application\actions\CreateRendezVousAction;
 use \toubeelib\application\actions\DeleteRendezVousAction;
 use \toubeelib\application\actions\CreatePraticienAction;
-use toubeelib\infrastructure\repositories\ArrayPraticienRepository;
-use toubeelib\infrastructure\repositories\ArrayRdvRepository;
 use toubeelib\infrastructure\PDO\PDOPraticien;
+use toubeelib\infrastructure\PDO\PDORendezVous;
 
 return [
 
@@ -80,11 +79,11 @@ return [
 
     // Répertoires
     PraticienRepositoryInterface::class => function (ContainerInterface $c) {
-        return new PDOPraticien($c['pdo.praticien']);
+        return new PDOPraticien($c->get('pdo.praticien'));
     },
 
     RdvRepositoryInterface::class => function (ContainerInterface $c) {
-        return new ArrayRdvRepository();
+        return new PDORendezVous($c->get('pdo.rdv'));
     },
 
     // Services
@@ -101,16 +100,30 @@ return [
         );
     },
 
-    // Actions
+    // Actions Praticien
     GetRendezVousAction::class => function (ContainerInterface $c) {
-        return new GetRendezVousAction($c->get(ServiceRendezVousInterface::class));
+        return new GetRendezVousAction(
+            $c->get(ServiceRendezVousInterface::class),
+            $c->get('pdo.rdv')
+        );
     },
-    GetPraticiensAction::class => function (ContainerInterface $c) {
-        return new GetPraticiensAction($c->get(ServicePraticienInterface::class), $c->get(PDO::class));
+    GetPraticiensAction::class => function (ContainerInterface $container) {
+        return new GetPraticiensAction(
+            $container->get(ServicePraticienInterface::class),
+            $container->get('pdo.praticien')
+        );
     },
+
     GetDisponibilitesPraticienAction::class => function (ContainerInterface $c) {
         return new GetDisponibilitesPraticienAction($c->get(ServiceRendezVousInterface::class));
     },
+
+    CreatePraticienAction::class => function (ContainerInterface $c) {
+        return new CreatePraticienAction($c->get(ServicePraticienInterface::class));
+    },
+
+
+    // Actions Rdvs
     ModifRendezVousAction::class => function (ContainerInterface $c) {
         return new ModifRendezVousAction($c->get(ServiceRendezVousInterface::class));
     },
@@ -120,7 +133,5 @@ return [
     DeleteRendezVousAction::class => function (ContainerInterface $c) {
         return new DeleteRendezVousAction($c->get(ServiceRendezVousInterface::class));
     },
-    CreatePraticienAction::class => function (ContainerInterface $c) {
-        return new CreatePraticienAction($c->get(ServicePraticienInterface::class));
-    },
+
 ];

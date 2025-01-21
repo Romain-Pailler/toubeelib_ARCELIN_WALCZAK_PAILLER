@@ -12,6 +12,6 @@ interface ServicePraticienInterface
     public function createPraticien(InputPraticienDTO $p): PraticienDTO;
     public function getPraticienById(string $id): PraticienDTO;
     public function getSpecialiteById(string $id): SpecialiteDTO;
-
-
+    public function getPraticiensBySpecialite(string $spe): array;
+    public function getPraticiensByCity(string $city): array;
 }

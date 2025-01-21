@@ -1,4 +1,5 @@
 <?php
+
 namespace toubeelib\application\actions;
 
 use Psr\Http\Message\ResponseInterface;
@@ -21,47 +22,51 @@ class GetRendezVousAction extends AbstractAction
 
         try {
             $rdv = $this->rdvRepo->getRendezvousById($idRdv);
-            $res = ["Rendez-Vous" =>[
+            $res = ["Rendez-Vous" => [
                 "id" => $rdv->ID,
                 "id_praticien" => $rdv->praticien,
                 "id_patient" => $rdv->patient,
                 "specialite_praticien" => $rdv->specialite_label,
                 "horaire" => $rdv->date,
                 "statut" => $rdv->statut,
-            ],"links" => [
-                "self"=> [
-                    "href"=> "/rdvs/" . $rdv->ID
+            ], "links" => [
+                "self" => [
+                    "href" => "/rdvs/" . $rdv->ID
                 ],
-                "modifier"=>[
-                    "href"=> "/rdvs/" . $rdv->ID
+                "modifier" => [
+                    "href" => "/rdvs/" . $rdv->ID
                 ],
-                "annuler"=>[
-                    "href"=> "/rdvs/" . $rdv->ID
+                "annuler" => [
+                    "href" => "/rdvs/" . $rdv->ID
                 ],
-                "praticien"=>[
-                    "href"=> "/praticiens/" . $rdv->praticien
+                "praticien" => [
+                    "href" => "/praticiens/" . $rdv->praticien
                 ],
-                "patient"=>[
-                    "href"=> "/patients/" . $rdv->patient
+                "patient" => [
+                    "href" => "/patients/" . $rdv->patient
                 ],
-                ]];
+            ]];
             $response->getBody()->write(json_encode($res));
-            return $response->withHeader('Content-Type','application/json')
-            ->withStatus(200);
+            return $response->withHeader('Content-Type', 'application/json')
+                ->withStatus(200);
         } catch (ServiceRendezVousNotDataFoundException $e) {
             $errorMessage = $e->getMessage();
-            $errorCode = $e->getCode(); 
+            $errorCode = $e->getCode();
 
             // Construire la réponse avec le message et le code d'erreur
             $response->getBody()->write(json_encode(['error' => $errorMessage]));
             return $response->withHeader('Content-Type', 'application/json')
-                    ->withStatus($errorCode);
-
-    }catch (\Exception $e) {
-        $response->getBody()->write(json_encode(['error' => 'Problème serveur']));
-        return $response->withHeader('Content-Type', 'application/json')
-            ->withStatus('500');
-
-}
-}
+                ->withStatus($errorCode);
+        } catch (\Exception $e) {
+            $response->getBody()->write(json_encode([
+                'error' => 'Problème serveur',
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]));
+            return $response->withHeader('Content-Type', 'application/json')
+                ->withStatus(500);
+        }
+    }
 }

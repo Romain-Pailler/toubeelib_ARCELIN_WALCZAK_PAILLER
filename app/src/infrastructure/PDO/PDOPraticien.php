@@ -145,7 +145,9 @@ class PDOPraticien implements PraticienRepositoryInterface
 
     public function getPraticiensBySpecialite(string $specialite): array
     {
-        $sql = "SELECT p.* FROM praticien p 
+        // On récupère d'abord les praticiens en fonction de la spécialité
+        $sql = "SELECT p.*, s.label AS specialite_label, s.description AS specialite_description 
+            FROM praticien p 
             JOIN specialite s ON p.specialite_id = s.id 
             WHERE s.label = :specialite";
 
@@ -155,23 +157,39 @@ class PDOPraticien implements PraticienRepositoryInterface
 
         $praticiens = [];
 
+        // On crée les objets Praticien et Specialite avec toutes les données nécessaires
         while ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $praticiens[] = new Praticien(
-                $data['id'],
+            $specialite = new Specialite(
+                $data['specialite_id'],
+                $data['specialite_label'],
+                $data['specialite_description']
+            );
+
+            $new_praticien = new Praticien(
                 $data['nom'],
                 $data['prenom'],
                 $data['adresse'],
                 $data['tel'],
-                new Specialite($data['specialite_id'], "", "")
             );
+
+            $new_praticien->setID($data['id']);
+
+            $new_praticien->setSpecialite($specialite);
+
+            $praticiens[] = $new_praticien;
         }
 
         return $praticiens;
     }
 
+
     public function getPraticiensByCity(string $city): array
     {
-        $sql = "SELECT * FROM praticien WHERE adresse LIKE :city";
+        // Jointure pour récupérer les informations sur les spécialités associées
+        $sql = "SELECT p.*, s.label AS specialite_label, s.description AS specialite_description 
+                FROM praticien p
+                JOIN specialite s ON p.specialite_id = s.id
+                WHERE p.adresse LIKE :city";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(':city', "%$city%", \PDO::PARAM_STR);
@@ -179,15 +197,25 @@ class PDOPraticien implements PraticienRepositoryInterface
 
         $praticiens = [];
 
+        // Création des objets Praticien et Specialite avec les données nécessaires
         while ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $praticiens[] = new Praticien(
-                $data['id'],
+            $specialite = new Specialite(
+                $data['specialite_id'],
+                $data['specialite_label'],
+                $data['specialite_description']
+            );
+
+            $new_praticien = new Praticien(
                 $data['nom'],
                 $data['prenom'],
                 $data['adresse'],
-                $data['tel'],
-                new Specialite($data['specialite_id'], "", "")
+                $data['tel']
             );
+
+            $new_praticien->setID($data['id']); // ID du praticien
+            $new_praticien->setSpecialite($specialite); // Spécialité associée
+
+            $praticiens[] = $new_praticien;
         }
 
         return $praticiens;
