@@ -4,19 +4,14 @@ declare(strict_types=1);
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use toubeelib\application\actions\GenericAction;
 
 return function (\Slim\App $app): \Slim\App {
 
-    $app->get('/praticiens', \toubeelib\application\actions\GetPraticiensAction::class);
-    $app->options(
-        '/{routes:.+}',
-        function (
-            Request $rq,
-            Response $rs,
-            array $args
-        ): Response {
-            return $rs;
-        }
-    )->add(new \toubeelib\application\middlewares\CorsMiddleware());
+    $app->map(['GET', 'POST', 'PATCH', 'DELETE', 'PUT'], '/{routes:.+}', GenericAction::class)->setName('genericRoute');
+    $app->options('/{routes:.+}', function (Request $request, Response $response) {
+        return $response;
+    });
+
     return $app;
 };
