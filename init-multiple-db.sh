@@ -6,6 +6,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
     CREATE DATABASE patient;
     CREATE DATABASE praticien;
     CREATE DATABASE rdv;
+    CREATE DATABASE users;
 EOSQL
 
 # Insert data into each database
@@ -66,4 +67,18 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "rdv" <<-EOSQL
         ('1','1', '1', 'A', 'confirmé', '2024-11-20 09:00:00'),
         ('2','2', '2', 'B', 'prévu', '2024-11-21 10:30:00'),
         ('3','3', '3', 'C', 'annulé', '2024-11-22 14:00:00');
+EOSQL
+
+# Insert data into Users DB
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "users" <<-EOSQL
+    CREATE TABLE Users (
+        id VARCHAR(255) PRIMARY KEY,
+        email VARCHAR(100) NOT NULL,
+        password VARCHAR(100) NOT NULL,
+        role VARCHAR(50) NOT NULL
+    );
+    INSERT INTO Users (id, email, password, role) VALUES 
+        ('1', 'admin', 'password123', 'admin'),
+        ('2', 'doctor1', 'securepass', 'praticien'),
+        ('3', 'patient1', 'mypassword', 'patient');
 EOSQL
