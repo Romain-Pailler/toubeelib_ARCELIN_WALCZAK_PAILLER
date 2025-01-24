@@ -6,6 +6,26 @@
 
 ---
 
+# 👥 Contribution au projet
+
+## TD1 : Analyse et conception de la couche Métier
+
+## TD2 : construction du composant métier de gestion des RDV
+
+## TD3 : API Restful
+
+## TD4 : Cors
+
+## TD5 : JWT, Authn/Authz
+
+## TD6 : architecure micro-services
+
+## TD7 : Authn/Authz dans l'architecture microservices
+
+## TD8 : communication asynchrones avec RabbitMQ
+
+---
+
 # ▶️ Lancer le projet
 
 Pour lancer le projet il suffit simplement de rentrer cette commande à la racine du projet
