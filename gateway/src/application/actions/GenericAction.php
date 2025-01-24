@@ -1,5 +1,5 @@
 <?php
-namespace toubeelib\application\actions;
+namespace gateway\application\actions;
 
 use GuzzleHttp\Exception\ClientException;
 use Psr\Http\Client\ClientInterface;
