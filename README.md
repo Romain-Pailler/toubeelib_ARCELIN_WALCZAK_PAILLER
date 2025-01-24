@@ -67,7 +67,13 @@ Légende :
 
 ## TD7 : Authn/Authz dans l'architecture microservices
 
+| Exercices | Nino | Romain | Dimitri |
+| --------- | :--: | :----: | :-----: |
+
 ## TD8 : communication asynchrones avec RabbitMQ
+
+| Exercices | Nino | Romain | Dimitri |
+| --------- | :--: | :----: | :-----: |
 
 ## Fonctionnalités globales
 
