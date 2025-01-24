@@ -101,7 +101,7 @@ Légende :
 | annuler un rendez-vous, à la demande d’un patient ou d’un praticien                          |  ✅  |        |         |
 | gérer le cycle de vie des rendez-vous (honoré, non honoré, payé)                             |      |        |   ✅    |
 | afficher le planning d’un praticien sur une période donnée (date de début, date de fin)      |  ✅  |        |         |
-| afficher les rendez-vous d’un patient                                                        |  ✅  |        |         |
+| afficher les rendez-vous d’un patient                                                        |  ✅  |   🔶   |         |
 | s’authentifier en tant que patient ou praticien                                              |  ✅  |        |         |
 
 ### Les fonctionnalités additionnelles attendues (notées sur 4 points)
