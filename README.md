@@ -6,6 +6,16 @@
 
 ---
 
+# ▶️ Lancer le projet
+
+Pour lancer le projet il suffit simplement de rentrer cette commande à la racine du projet
+
+```bash
+docker compose up -d -- build
+```
+
+---
+
 # Documentation API
 
 ## Introduction
