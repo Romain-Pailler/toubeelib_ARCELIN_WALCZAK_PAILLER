@@ -10,7 +10,7 @@
 
 ## Introduction
 
-Cette API permet de gérer les rendez-vous médicaux et les praticiens. Elle inclut des routes publiques pour l'authentification et des routes protégées qui nécessitent un **token JWT** valide.
+Cette API permet de gérer les rendez-vous médicaux, des praticiens, des patients, etc. Elle inclut des routes publiques pour l'authentification et des routes protégées qui nécessitent un **token JWT** valide pour pouvoir y accéder.
 
 ## Routes
 
