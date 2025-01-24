@@ -3,17 +3,19 @@
 use GuzzleHttp\Client;
 use Psr\Container\ContainerInterface;
 use toubeelib\application\actions\GenericAction;
+
 return [
 
-    'toubeelibClient' => function() {
+    'toubeelibClient' => function(ContainerInterface $c) {
         return new Client([
-            'base_uri' => 'http://localhost:80',
-            'timeout' => 1000.0
+            'base_uri' => $c->get('api.toubeelib'),
+            'timeout' => 2.0
         ]);
     },
 
+
+
     GenericAction::class => function(ContainerInterface $container){
-        $toubeelibClient = $container->get('toubeelibClient');
-        return new GenericAction($toubeelibClient);
+        return new GenericAction($container->get('toubeelibClient'));
     }
 ];
