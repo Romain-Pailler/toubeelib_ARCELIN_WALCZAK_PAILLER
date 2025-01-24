@@ -8,27 +8,104 @@
 
 # 👥 Contribution au projet
 
+Légende :
+
+✅ Créateur
+🔶 Soutien
+
 ## TD1 : Analyse et conception de la couche Métier
 
-| Fonctionnalités | Nino | Romain | Dimitri |
-| --------------- | :--: | :----: | :-----: |
-|                 |      |        |         |
-|                 |      |        |         |
-|                 |      |        |         |
+| Exercices                                     | Nino | Romain | Dimitri |
+| --------------------------------------------- | :--: | :----: | :-----: |
+| architecture                                  |  ✅  |   ✅   |   ✅    |
+| conception du service de prise de rendez-vous |  ✅  |   ✅   |   ✅    |
 
 ## TD2 : construction du composant métier de gestion des RDV
 
+| Exercices                              | Nino | Romain | Dimitri |
+| -------------------------------------- | :--: | :----: | :-----: |
+| consulter un rendez-vous               |  ✅  |        |         |
+| créer un rendez-vous                   |  ✅  |        |         |
+| annuler un rendez-vous                 |  ✅  |        |         |
+| lister les disponibilités du praticien |  ✅  |        |         |
+| modifier un rendez-vous                |  ✅  |        |         |
+| gérer le cycle de vie des rendez-vous  |  ✅  |        |         |
+
 ## TD3 : API Restful
+
+| Exercices                | Nino | Romain | Dimitri |
+| ------------------------ | :--: | :----: | :-----: |
+| API v1                   |      |   ✅   |         |
+| API v2                   |      |   ✅   |         |
+| API et données échangées |      |   ✅   |         |
+| accéder à un rendez-vous |      |   ✅   |         |
+| modifier un rendez-vous  |      |   ✅   |         |
+| créer un rendez-vous     |      |   ✅   |         |
+| compléter l’API          |  🔶  |   ✅   |         |
+| CORS                     |      |   ✅   |         |
 
 ## TD4 : Cors
 
+| Exercices    | Nino | Romain | Dimitri |
+| ------------ | :--: | :----: | :-----: |
+| headers CORS |      |   ✅   |         |
+
 ## TD5 : JWT, Authn/Authz
 
+| Exercices                                           | Nino | Romain | Dimitri |
+| --------------------------------------------------- | :--: | :----: | :-----: |
+| Authentification                                    |  ✅  |        |         |
+| Route Signin                                        |  ✅  |        |         |
+| Middleware de contrôle d’authentification           |  ✅  |        |         |
+| Authz pour les praticiens                           |  ✅  |        |         |
+| Contrôle d’autorisation pour accéder à un praticien |  ✅  |        |         |
+
 ## TD6 : architecure micro-services
+
+| Exercices | Nino | Romain | Dimitri |
+| --------- | :--: | :----: | :-----: |
 
 ## TD7 : Authn/Authz dans l'architecture microservices
 
 ## TD8 : communication asynchrones avec RabbitMQ
+
+## Fonctionnalités globales
+
+### Toubeelib, architecture générale (noté sur 10 points)
+
+| Fonctionnalités                                                | Nino | Romain | Dimitri |
+| -------------------------------------------------------------- | :--: | :----: | :-----: |
+| API respectant les principes RESTful                           |      |   ✅   |         |
+| architecture basée sur les principes d’architecture Hexagonale |  ✅  |   ✅   |         |
+| utilisation d’un conteneur d’injection de dépendances          |  ✅  |   ✅   |         |
+| traitement des erreurs et exceptions                           |  ✅  |   ✅   |         |
+| traitement des headers CORS                                    |      |   ✅   |         |
+| authentification à l’aide de tokens JWT                        |  ✅  |        |         |
+| middlewares                                                    |  ✅  |   ✅   |         |
+| validation et filtrage des données reçues au travers de l’API  |  ✅  |   ✅   |         |
+| utilisation de bases de données distinctes                     |      |        |   ✅    |
+
+### Les fonctionnalités minimales attendues (notées sur 6 points)
+
+| Fonctionnalités                                                                              | Nino | Romain | Dimitri |
+| -------------------------------------------------------------------------------------------- | :--: | :----: | :-----: |
+| lister/rechercher des praticiens                                                             |  ✅  |        |         |
+| lister les disponibilités d’un praticien sur une période donnée (date de début, date de fin) |  ✅  |        |         |
+| réserver un rendez-vous pour un praticien à une date/heure donnée                            |  ✅  |        |         |
+| annuler un rendez-vous, à la demande d’un patient ou d’un praticien                          |  ✅  |        |         |
+| gérer le cycle de vie des rendez-vous (honoré, non honoré, payé)                             |      |        |   ✅    |
+| afficher le planning d’un praticien sur une période donnée (date de début, date de fin)      |  ✅  |        |         |
+| afficher les rendez-vous d’un patient                                                        |  ✅  |        |         |
+| s’authentifier en tant que patient ou praticien                                              |  ✅  |        |         |
+
+### Les fonctionnalités additionnelles attendues (notées sur 4 points)
+
+| Fonctionnalités                                                                                            | Nino | Romain | Dimitri |
+| ---------------------------------------------------------------------------------------------------------- | :--: | :----: | :-----: |
+| créer un praticien                                                                                         |  ✅  |        |         |
+| s’inscrire en tant que patient                                                                             |  ✅  |        |         |
+| gérer les indisponibilités d’un praticien : périodes ponctuelles sur lesquelles il ne peut accepter de RDV |  ✅  |        |         |
+| gérer les disponibilités d’un praticien : jours, horaires et durée des RDV pour chaquepraticien            |  ✅  |        |         |
 
 ---
 
