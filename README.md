@@ -16,7 +16,7 @@ docker compose up -d -- build
 
 ---
 
-# Documentation API
+# 📝 Documentation API
 
 ## Introduction
 
