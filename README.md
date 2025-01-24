@@ -10,6 +10,12 @@
 
 ## TD1 : Analyse et conception de la couche Métier
 
+| Fonctionnalités | Nino | Romain | Dimitri |
+| --------------- | :--: | :----: | :-----: |
+|                 |      |        |         |
+|                 |      |        |         |
+|                 |      |        |         |
+
 ## TD2 : construction du composant métier de gestion des RDV
 
 ## TD3 : API Restful
