@@ -1,5 +1,6 @@
 <?php
 
+use gateway\application\actions\GatewayGetPraticienByIdAction;
 use GuzzleHttp\Client;
 use middlewares\CorsMiddleware;
 use Psr\Container\ContainerInterface;
@@ -18,5 +19,8 @@ return [
     },
     GenericAction::class => function(ContainerInterface $container){
         return new GenericAction($container->get('toubeelibClient'));
+    },
+    GatewayGetPraticienByIdAction::class => function(ContainerInterface $container){
+        return new GatewayGetPraticienByIdAction($container->get('toubeelibClient'));
     }
 ];
