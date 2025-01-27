@@ -7,7 +7,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\HttpNotFoundException;
 
-class GenericAction extends AbstractAction
+class GatewayGetAllPraticiensAction extends AbstractAction
 {
     private ClientInterface $toubeelibClient;
 
