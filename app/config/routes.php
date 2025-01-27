@@ -20,6 +20,7 @@ return function (\Slim\App $app): \Slim\App {
     $app->post('/praticiens', \toubeelib\application\actions\CreatePraticienAction::class);
 
     $app->get('/praticiens', \toubeelib\application\actions\GetPraticiensAction::class);
+    $app->get('/praticiens/{ID-PRATICIEN}', \toubeelib\application\actions\GetPraticienIDAction::class);
     $app->get('/praticiens/{ID-PRATICIEN}/disponibilites', \toubeelib\application\actions\GetDisponibilitesPraticienAction::class);
 
     $app->options(

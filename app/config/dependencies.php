@@ -14,6 +14,7 @@ use \toubeelib\application\actions\DeleteRendezVousAction;
 use \toubeelib\application\actions\CreatePraticienAction;
 use toubeelib\infrastructure\PDO\PDOPraticien;
 use toubeelib\infrastructure\PDO\PDORendezVous;
+use toubeelib\application\actions\GetPraticienIDAction;
 
 return [
 
@@ -113,6 +114,13 @@ return [
             $container->get('pdo.praticien')
         );
     },
+
+    GetPraticienIDAction::class => function (ContainerInterface $c) {
+        return new GetPraticienIDAction(
+            $c->get(ServicePraticienInterface::class)
+        );
+    },
+
 
     GetDisponibilitesPraticienAction::class => function (ContainerInterface $c) {
         return new GetDisponibilitesPraticienAction($c->get(ServiceRendezVousInterface::class));

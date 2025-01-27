@@ -72,6 +72,12 @@ class ServicePraticien implements ServicePraticienInterface
     }
 
 
+    public function getPraticien(): array
+    {
+        return $this->praticienRepository->getPraticiens();
+    }
+
+
     public function ajouterVacances(string $id, $date_deb, $date_fin)
     {
         $praticien = $this->praticienRepository->getPraticienById($id);
