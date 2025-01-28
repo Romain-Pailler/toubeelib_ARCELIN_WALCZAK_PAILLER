@@ -18,7 +18,16 @@ class GatewayGetPraticienByIdAction extends AbstractAction
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
         $id = $args['id'];
         try {
-            $response = $this->toubeelibClient->get("praticiens/$id/disponibilites",['query'=>$request->getQueryParams()]);
+            $queryParams = $request->getQueryParams();
+
+            // Si des query params existent, les inclure dans la requête
+            if (!empty($queryParams)) {
+                $response = $this->toubeelibClient->get("praticiens/$id/disponibilites", ['query' => $queryParams]);
+            } else {
+                // Si aucun query param, envoyer une requête sans paramètres
+                $response = $this->toubeelibClient->get("praticiens/$id");
+            }
+
         } catch (ClientException $e) {
             throw new HttpNotFoundException($request, $e->getMessage());
         }
