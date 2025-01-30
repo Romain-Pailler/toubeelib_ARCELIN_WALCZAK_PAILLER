@@ -14,12 +14,16 @@ use \toubeelib\application\actions\DeleteRendezVousAction;
 use \toubeelib\application\actions\CreatePraticienAction;
 use toubeelib\infrastructure\PDO\PDOPraticien;
 use toubeelib\infrastructure\PDO\PDORendezVous;
+
 use toubeelib\core\repositoryInterfaces\AuthRepositoryInterface;
 use toubeelib\infrastructure\PDO\PDOAuth;
 use toubeelib\core\services\auth\ServiceAuth;
 use toubeelib\core\services\auth\AuthProvider;
 use toubeelib\application\actions\SignInAction;
 use toubeelib\application\middlewares\AuthMiddleware;
+
+use toubeelib\application\actions\GetPraticienIDAction;
+
 
 return [
 
@@ -170,6 +174,13 @@ return [
             $container->get('pdo.praticien')
         );
     },
+
+    GetPraticienIDAction::class => function (ContainerInterface $c) {
+        return new GetPraticienIDAction(
+            $c->get(ServicePraticienInterface::class)
+        );
+    },
+
 
     GetDisponibilitesPraticienAction::class => function (ContainerInterface $c) {
         return new GetDisponibilitesPraticienAction($c->get(ServiceRendezVousInterface::class));

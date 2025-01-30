@@ -137,11 +137,50 @@ class PDOPraticien implements PraticienRepositoryInterface
 
 
         $prat = new Praticien($data['nom'], $data['prenom'], $data['adresse'], $data['tel']);
+        $prat->setID($id);
         $spe = new Specialite($data['specialite_id'], $dataSpe['label'], $dataSpe['description']);
 
         $prat->setSpecialite($spe);
         return $prat;
     }
+
+    public function getPraticiens(): array
+    {
+        // Requête pour récupérer tous les praticiens avec leurs spécialités
+        $sql = "SELECT p.*, s.label AS specialite_label, s.description AS specialite_description 
+            FROM praticien p 
+            JOIN specialite s ON p.specialite_id = s.id";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+
+        $praticiens = [];
+
+        // Parcours des résultats et création des objets Praticien et Specialite
+        while ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $specialite = new Specialite(
+                $data['specialite_id'],
+                $data['specialite_label'],
+                $data['specialite_description']
+            );
+
+            $new_praticien = new Praticien(
+                $data['nom'],
+                $data['prenom'],
+                $data['adresse'],
+                $data['tel']
+            );
+
+            $new_praticien->setID($data['id']);
+            $new_praticien->setSpecialite($specialite);
+
+            $praticiens[] = $new_praticien;
+        }
+
+        return $praticiens;
+    }
+
+
 
     public function getPraticiensBySpecialite(string $specialite): array
     {

@@ -31,7 +31,7 @@ class GetPraticiensAction extends AbstractAction
             } elseif (!empty($ville)) {
                 $praticiens = $this->praticienService->getPraticiensByCity($ville);
             } else {
-                throw new ServicePraticienInvalidDataException('Vous devez spécifier une ville ou une spécialité.');
+                $praticiens = $this->praticienService->getPraticien();
             }
 
             // Transformation des données en tableau
@@ -49,25 +49,22 @@ class GetPraticiensAction extends AbstractAction
             // Réponse de succès avec les praticiens trouvés
             $response->getBody()->write(json_encode($res));
             return $response->withHeader('Content-Type', 'application/json')
-                            ->withStatus(200);
-
+                ->withStatus(200);
         } catch (ServicePraticienInvalidDataException $e) {
             // Gestion des erreurs liées aux données invalides
             $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
             return $response->withHeader('Content-Type', 'application/json')
-                            ->withStatus(400);
-
+                ->withStatus(400);
         } catch (RepositoryEntityNotFoundException $e) {
             // Gestion des erreurs liées à des entités non trouvées
             $response->getBody()->write(json_encode(['error' => 'Ressource non trouvée : ' . $e->getMessage()]));
             return $response->withHeader('Content-Type', 'application/json')
-                            ->withStatus(404);
-
+                ->withStatus(404);
         } catch (\Exception $e) {
             // Gestion des autres erreurs non anticipées
             $response->getBody()->write(json_encode(['error' => 'Erreur interne du serveur : ' . $e->getMessage()]));
             return $response->withHeader('Content-Type', 'application/json')
-                            ->withStatus(500);
+                ->withStatus(500);
         }
     }
 }

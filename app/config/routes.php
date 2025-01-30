@@ -22,13 +22,13 @@ return function (\Slim\App $app): \Slim\App {
         $group->post('/rdvs', \toubeelib\application\actions\CreateRendezVousAction::class);
         $group->delete('/rdvs/{ID-RDV}', \toubeelib\application\actions\DeleteRendezVousAction::class);
 
+
         // Actions liées aux praticiens avec autorisation spécifique
         $group->post('/praticiens', \toubeelib\application\actions\CreatePraticienAction::class);
         $group->get('/praticiens', \toubeelib\application\actions\GetPraticiensAction::class)
             ->add(AuthzPraticienMiddleware::class); // Middleware spécifique pour la route des praticiens
         $group->get('/praticiens/{ID-PRATICIEN}/disponibilites', \toubeelib\application\actions\GetDisponibilitesPraticienAction::class);
     })->add(AuthMiddleware::class); // Middleware global d'authentification pour tout le groupe /secure
-
     // Options route for CORS
     $app->options(
         '/{routes:.+}',
