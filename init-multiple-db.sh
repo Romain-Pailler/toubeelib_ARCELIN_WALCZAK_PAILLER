@@ -13,6 +13,8 @@ EOSQL
 
 # Insert data into Praticien DB
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "praticien" <<-EOSQL
+    DROP TABLE IF EXISTS Praticien CASCADE;
+    DROP TABLE IF EXISTS Specialite CASCADE;
     CREATE TABLE Specialite (
         id VARCHAR(255) PRIMARY KEY,
         label VARCHAR(100) NOT NULL,
@@ -39,6 +41,7 @@ EOSQL
 
 # Insert data into Patients DB
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "patient" <<-EOSQL
+    DROP TABLE IF EXISTS Patients CASCADE;
     CREATE TABLE Patients (
         id VARCHAR(255) PRIMARY KEY,
         nom VARCHAR(100) NOT NULL,
@@ -55,6 +58,7 @@ EOSQL
 
 # Insert data into RDV DB
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "rdv" <<-EOSQL
+    DROP TABLE IF EXISTS RendezVous CASCADE;
     CREATE TABLE RendezVous (
         id VARCHAR(255) PRIMARY KEY,
         praticien_id VARCHAR(255) NOT NULL,
@@ -71,14 +75,11 @@ EOSQL
 
 # Insert data into Users DB
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "users" <<-EOSQL
+    DROP TABLE IF EXISTS Users CASCADE;
     CREATE TABLE Users (
         id VARCHAR(255) PRIMARY KEY,
         email VARCHAR(100) NOT NULL,
         password VARCHAR(100) NOT NULL,
         role VARCHAR(50) NOT NULL
     );
-    INSERT INTO Users (id, email, password, role) VALUES 
-        ('1', 'admin', 'password123', 'admin'),
-        ('2', 'doctor1', 'securepass', 'praticien'),
-        ('3', 'patient1', 'mypassword', 'patient');
 EOSQL

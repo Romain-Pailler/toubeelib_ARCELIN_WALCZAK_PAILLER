@@ -6,7 +6,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use toubeelib\core\services\rdv\ServiceRendezVousInterface;
 use toubeelib\core\services\rdv\ServiceRendezVousNotDataFoundException;
-use toubeelib\core\services\rdv\InvalidRendezVousDataException;
+use InvalidArgumentException;
 
 class ModifRendezVousAction extends AbstractAction
 {
@@ -24,34 +24,21 @@ class ModifRendezVousAction extends AbstractAction
         // Récupération de l'ID du rendez-vous depuis les arguments de la route
         $idRdv = $args['ID-RDV'];
 
-        // Récupération des données fournies dans le corps de la requête (JSON)
-        $parsedBody = $request->getParsedBody();
-
         try {
-            $fieldsToUpdate = [];
+            $body = $request->getParsedBody();
+            $specialite = $body['specialite'] ?? null;
+            $patient = $body['patient'] ?? null;
 
 
-            if (isset($parsedBody['specialite']) && is_string($parsedBody['specialite'])) {
-                $fieldsToUpdate['specialite'] = $parsedBody['specialite'];
+            if (isset($patient)) {
+                $this->rdvService->changePatient($idRdv, $patient);
             }
 
-            if (isset($parsedBody['patient']) && is_string($parsedBody['patient'])) {
-                $fieldsToUpdate['patient'] = $parsedBody['patient'];
-            }
-
-            if (empty($fieldsToUpdate)) {
-                throw new \InvalidArgumentException("Aucune donnée valide à mettre à jour.");
+            if (isset($specialite)) {
+                $this->rdvService->changeSpecialite($idRdv, $specialite);
             }
 
 
-            // Appliquer les modifications en fonction des champs présents
-            if (isset($fieldsToUpdate['specialite'])) {
-                $this->rdvService->changeSpecialite($idRdv, $fieldsToUpdate['specialite']);
-            }
-
-            if (isset($fieldsToUpdate['patient'])) {
-                $this->rdvService->changePatient($idRdv, $fieldsToUpdate['patient']);
-            }
             // Récupérer les informations mises à jour du rendez-vous après modifications
             $rdv = $this->rdvService->getRendezvousById($idRdv);
 
@@ -85,12 +72,14 @@ class ModifRendezVousAction extends AbstractAction
             $response->getBody()->write(json_encode(['error' => 'Rendez-vous non trouvé']));
             return $response->withHeader('Content-Type', 'application/json')
                 ->withStatus(404);
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
+            // Gestion des erreurs liées à des arguments invalides
             $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
             return $response->withHeader('Content-Type', 'application/json')
-                ->withStatus(400);
+                ->withStatus(400); // Bad Request
         } catch (\Exception $e) {
-            $response->getBody()->write(json_encode(['error' => 'Erreur interne du serveur']));
+            // Gestion des autres erreurs non anticipées
+            $response->getBody()->write(json_encode(['error' => 'Erreur interne du serveur : ' . $e->getMessage()]));
             return $response->withHeader('Content-Type', 'application/json')
                 ->withStatus(500);
         }
