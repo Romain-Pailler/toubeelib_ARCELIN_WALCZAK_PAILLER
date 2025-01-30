@@ -6,7 +6,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $container = require_once __DIR__ . '/../config/dependencies.php'; // Remplace par le bon chemin
 
 // Récupérer la Closure qui crée l'objet PDO et l'exécuter pour obtenir l'instance de PDO
-$pdoClosure = $container[PDO::class];
+$pdoClosure = $container['pdo.praticien'];
 $pdo = $pdoClosure(); // Appel de la closure pour obtenir l'objet PDO
 
 // Créer le repository PDOPraticien en lui passant l'objet PDO
