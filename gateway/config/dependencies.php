@@ -6,7 +6,6 @@ use GuzzleHttp\Client;
 use gateway\middlewares\CorsMiddleware;
 use Psr\Container\ContainerInterface;
 
-
 return [
 
     'toubeelibClient' => function (ContainerInterface $c) {
@@ -29,8 +28,6 @@ return [
         return new GatewayGetAllPraticiensAction($container->get('praticienClient'));
     },
     GatewayGetPraticienByIdAction::class => function (ContainerInterface $container) {
-
         return new GatewayGetPraticienByIdAction($container->get('praticienClient'));
     }
-
 ];

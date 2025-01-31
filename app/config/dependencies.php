@@ -14,25 +14,10 @@ use \toubeelib\application\actions\DeleteRendezVousAction;
 use \toubeelib\application\actions\CreatePraticienAction;
 use toubeelib\infrastructure\PDO\PDOPraticien;
 use toubeelib\infrastructure\PDO\PDORendezVous;
-
-use toubeelib\core\repositoryInterfaces\AuthRepositoryInterface;
-use toubeelib\infrastructure\PDO\PDOAuth;
-use toubeelib\core\services\auth\ServiceAuth;
-use toubeelib\core\services\auth\AuthProvider;
-use toubeelib\application\actions\SignInAction;
-use toubeelib\application\middlewares\AuthMiddleware;
-
 use toubeelib\application\actions\GetPraticienIDAction;
-
 
 return [
 
-    'settings' => [
-        'displayErrorDetails' => true,
-        'logErrors' => true,
-        'logErrorDetails' => true,
-        'jwt_secret' => 'votre_clé_secrète_jwt',
-    ],
     // Connexion principale à la base de données PostgreSQL
     'pdo.rdv' => function (): PDO {
         $host = 'toubeelib.db';
@@ -93,26 +78,6 @@ return [
         }
     },
 
-    // Quatrième connexion PDO
-    'pdo.users' => function (): PDO {
-        $host = 'toubeelib.db';
-        $port = '5432';
-        $dbname = 'users';
-        $user = 'root';
-        $password = 'root';
-
-        $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
-
-        try {
-            return new PDO($dsn, $user, $password, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            ]);
-        } catch (\PDOException $e) {
-            throw new \RuntimeException('Erreur de connexion à la base tertiaire : ' . $e->getMessage());
-        }
-    },
-
     // Répertoires
     PraticienRepositoryInterface::class => function (ContainerInterface $c) {
         return new PDOPraticien($c->get('pdo.praticien'));
@@ -120,31 +85,6 @@ return [
 
     RdvRepositoryInterface::class => function (ContainerInterface $c) {
         return new PDORendezVous($c->get('pdo.rdv'));
-    },
-
-    AuthRepositoryInterface::class => function (ContainerInterface $c) {
-        return new PDOAuth($c->get('pdo.users'));
-    },
-
-    // Service d'authentification
-    ServiceAuth::class => function (ContainerInterface $c) {
-        return new ServiceAuth($c->get(AuthRepositoryInterface::class));
-    },
-
-    AuthProvider::class => function (ContainerInterface $c) {
-        return new AuthProvider(
-            $c->get(ServiceAuth::class),
-            'votre_clé_secrète_jwt' // Remplacez par votre clé secrète JWT
-        );
-    },
-
-    AuthMiddleware::class => function (ContainerInterface $container) {
-        return new AuthMiddleware($container->get('settings')['jwt_secret']);
-    },
-
-    // Action SignIn
-    SignInAction::class => function (ContainerInterface $c) {
-        return new SignInAction($c->get(AuthProvider::class));
     },
 
     // Services

@@ -1,11 +1,12 @@
 networks:
   toubeelib.net:
     driver: bridge
-
 services:
 
   # service api.toubeelib : api pour la prise de rdv
+  #
   api.toubeelib:
+    #  image: 'canals/php:8.3-cli'
     build:
       context: build
       dockerfile: 8.3-cli.Dockerfile
@@ -19,11 +20,7 @@ services:
       - toubeelib.net
     depends_on:
       - toubeelib.db
-    command: >
-      sh -c " for i in {1..10}; do
-        echo 'Waiting for database... $i';
-        sleep 1;
-      done; php ./init-script.php && echo 'Script exécuté avec succès'; php -S 0.0.0.0:80 -t /var/php/public"
+    command: php -S 0.0.0.0:80 -t /var/php/public
 
   gateway.toubeelib:
     #  image: 'canals/php:8.3-cli'
@@ -81,16 +78,14 @@ services:
       - ./praticiens/sql:/var/sql
       - ./init-praticien-db.sh:/docker-entrypoint-initdb.d/init-multiple-db.sh
   #
-
   # service administration des bases sql
+  #
   adminer:
     image: adminer
     ports:
       - '8080:8080'
     networks:
       - toubeelib.net
-
-# Services optionnels (commentés pour l'instant)
 
 #  patient.db:
 #    image: 'postgres:latest'
@@ -101,7 +96,7 @@ services:
 #      - toubeelib.net
 #    volumes:
 #      - ./app/sql:/var/sql'
-
+#
 #  praticien.db:
 #    image: 'postgres:latest'
 #    env_file: ./praticiendb.env
@@ -111,7 +106,7 @@ services:
 #      - toubeelib.net
 #    volumes:
 #      - ./app/sql:/var/sql'
-
+#  
 #  rdv.db:
 #    image: 'postgres:latest'
 #    env_file: ./rdvdb.env

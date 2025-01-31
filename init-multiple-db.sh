@@ -4,11 +4,14 @@ set -e
 # Create databases
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
     CREATE DATABASE patient;
+    CREATE DATABASE praticien;
     CREATE DATABASE rdv;
     CREATE DATABASE users;
 EOSQL
 
 # Insert data into each database
+
+# Insert data into Praticien DB
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "praticien" <<-EOSQL
     DROP TABLE IF EXISTS Praticien CASCADE;
     DROP TABLE IF EXISTS Specialite CASCADE;
@@ -35,7 +38,6 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "praticien" <<-EOSQ
         ('2','Martin', 'Jean', '12 avenue des Vosges, 57000 Metz', '0609876543', 'B'),
         ('3','Durand', 'Luc', '5 boulevard Saint-Michel, 75005 Paris', '0601112233', 'C');
 EOSQL
-
 
 # Insert data into Patients DB
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "patient" <<-EOSQL
