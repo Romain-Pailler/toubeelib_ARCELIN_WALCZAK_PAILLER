@@ -18,4 +18,6 @@ composer.phar
 composer.lock
 /gateway/logs/*
 /gateway/vendor
+/praticiens/logs/*
+/praticiens/vendor
 *.env

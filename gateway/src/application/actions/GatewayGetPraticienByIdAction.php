@@ -1,4 +1,5 @@
 <?php
+
 namespace gateway\application\actions;
 
 use GuzzleHttp\Exception\ClientException;
@@ -9,13 +10,15 @@ use Slim\Exception\HttpNotFoundException;
 
 class GatewayGetPraticienByIdAction extends AbstractAction
 {
-    private ClientInterface $toubeelibClient;
+    private ClientInterface $praticienClient;
 
-    public function __construct(ClientInterface $client) {
-        $this->toubeelibClient = $client;
+    public function __construct(ClientInterface $client)
+    {
+        $this->praticienClient = $client;
     }
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+    {
         $id = $args['id'];
         if (empty($id)) {
             $response->getBody()->write(json_encode(['error' => "L'ID du praticien est requis."]));
@@ -24,7 +27,10 @@ class GatewayGetPraticienByIdAction extends AbstractAction
         }
         try {
             $queryParams = $request->getQueryParams();
-            $response = $this->toubeelibClient->get("praticiens/$id",['query' => $queryParams]);
+
+            if (empty($queryParams)) {
+                $response = $this->praticienClient->get("praticiens/$id");
+            }
         } catch (ClientException $e) {
             throw new HttpNotFoundException($request, $e->getMessage());
         }
