@@ -7,10 +7,12 @@ use praticiens\application\actions\GetPraticiensAction;
 use praticiens\application\actions\CreatePraticienAction;
 use praticiens\infrastructure\PDO\PDOPraticien;
 use praticiens\application\actions\GetPraticienIDAction;
+use praticiens\core\services\authorization\ServiceAuthorization;
+use praticiens\application\middlewares\AuthzMiddleware;
 
 return [
 
-    
+    // Connexion PDO
     'pdo.praticien' => function (): PDO {
         $host = 'praticien.db';
         $port = '5432';
@@ -30,17 +32,23 @@ return [
         }
     },
 
-
     // Répertoires
     PraticienRepositoryInterface::class => function (ContainerInterface $c) {
         return new PDOPraticien($c->get('pdo.praticien'));
     },
+
+    // Services
     ServicePraticienInterface::class => function (ContainerInterface $c) {
         return new \praticiens\core\services\praticien\ServicePraticien(
             $c->get(PraticienRepositoryInterface::class)
         );
     },
 
+    ServiceAuthorization::class => function (ContainerInterface $c) {
+        return new ServiceAuthorization();
+    },
+
+    // Actions
     GetPraticiensAction::class => function (ContainerInterface $container) {
         return new GetPraticiensAction(
             $container->get(ServicePraticienInterface::class),
@@ -48,14 +56,20 @@ return [
         );
     },
 
-    GetPraticienIDAction::class => function (ContainerInterface $c) {
+    GetPraticienIDAction::class => function (ContainerInterface $container) {
         return new GetPraticienIDAction(
-            $c->get(ServicePraticienInterface::class)
+            $container->get(ServicePraticienInterface::class),
+            $container->get('pdo.praticien')
         );
     },
 
     CreatePraticienAction::class => function (ContainerInterface $c) {
         return new CreatePraticienAction($c->get(ServicePraticienInterface::class));
+    },
+
+    // AuthzMiddleware prend un tableau de rôles autorisés
+    AuthzMiddleware::class => function (ContainerInterface $container) {
+        return new AuthzMiddleware($container->get(ServiceAuthorization::class), ['admin', 'user']);
     },
 
 ];

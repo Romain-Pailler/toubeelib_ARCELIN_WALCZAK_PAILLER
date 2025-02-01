@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use praticiens\core\services\praticien\ServicePraticienInterface;
 use praticiens\core\services\praticien\ServicePraticienInvalidDataException;
 use praticiens\core\repositoryInterfaces\RepositoryEntityNotFoundException;
+use Slim\Exception\HttpForbiddenException;
 
 class GetPraticiensAction extends AbstractAction
 {
@@ -47,24 +48,47 @@ class GetPraticiensAction extends AbstractAction
             }, $praticiens);
 
             // Réponse de succès avec les praticiens trouvés
-            $response->getBody()->write(json_encode($res));
+            $response->getBody()->write(json_encode(
+                $res
+            ));
             return $response->withHeader('Content-Type', 'application/json')
                 ->withStatus(200);
         } catch (ServicePraticienInvalidDataException $e) {
             // Gestion des erreurs liées aux données invalides
-            $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
+            $response->getBody()->write(json_encode([
+                'status' => 'error',
+                'message' => 'Données invalides',
+                'details' => $e->getMessage()
+            ]));
             return $response->withHeader('Content-Type', 'application/json')
-                ->withStatus(400);
+                ->withStatus(400); // Code d'erreur pour mauvaise requête
         } catch (RepositoryEntityNotFoundException $e) {
             // Gestion des erreurs liées à des entités non trouvées
-            $response->getBody()->write(json_encode(['error' => 'Ressource non trouvée : ' . $e->getMessage()]));
+            $response->getBody()->write(json_encode([
+                'status' => 'error',
+                'message' => 'Ressource non trouvée',
+                'details' => $e->getMessage()
+            ]));
             return $response->withHeader('Content-Type', 'application/json')
-                ->withStatus(404);
+                ->withStatus(404); // Code d'erreur pour ressources non trouvées
+        } catch (HttpForbiddenException $e) {
+            // Gestion des erreurs liées à l'accès interdit (par exemple, un rôle insuffisant)
+            $response->getBody()->write(json_encode([
+                'status' => 'error',
+                'message' => 'Accès interdit',
+                'details' => 'Vous n\'avez pas les droits nécessaires pour accéder à cette ressource.'
+            ]));
+            return $response->withHeader('Content-Type', 'application/json')
+                ->withStatus(403); // Code d'erreur pour accès interdit
         } catch (\Exception $e) {
             // Gestion des autres erreurs non anticipées
-            $response->getBody()->write(json_encode(['error' => 'Erreur interne du serveur : ' . $e->getMessage()]));
+            $response->getBody()->write(json_encode([
+                'status' => 'error',
+                'message' => 'Erreur interne du serveur',
+                'details' => 'Une erreur est survenue, veuillez réessayer plus tard.'
+            ]));
             return $response->withHeader('Content-Type', 'application/json')
-                ->withStatus(500);
+                ->withStatus(500); // Code d'erreur pour erreurs internes
         }
     }
 }
