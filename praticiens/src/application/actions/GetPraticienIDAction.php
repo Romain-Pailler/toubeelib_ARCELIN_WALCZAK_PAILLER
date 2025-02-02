@@ -35,6 +35,7 @@ class GetPraticienIDAction extends AbstractAction
                 'id' => $praticien->ID,
                 'nom' => $praticien->nom,
                 'prenom' => $praticien->prenom,
+                'specialite_id' => $praticien->specialite_id,
                 'specialite' => $praticien->specialite_label,
                 'adresse' => $praticien->adresse,
                 'telephone' => $praticien->tel,

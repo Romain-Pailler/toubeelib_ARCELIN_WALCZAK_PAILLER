@@ -41,6 +41,12 @@ return [
             'timeout' => 2.0
         ]);
     },
+    'rdvsClient' => function (ContainerInterface $c) {
+        return new Client([
+            'base_uri' => $c->get('api.rdvs'),
+            'timeout' => 2.0
+        ]);
+    },
 
     CorsMiddleware::class => function () {
         return new CorsMiddleware();
@@ -58,19 +64,19 @@ return [
 
     // CHANGER TOUBEELIBCLIENT PAR RDVCLIENT
     CreateRendezVousActionGateway::class => function(ContainerInterface $container){
-        return new CreateRendezVousActionGateway($container->get('toubeelibClient'));
+        return new CreateRendezVousActionGateway($container->get('rdvsClient'));
     },
     GetDisponibilitesPraticienActionGateway::class => function(ContainerInterface $container){
-        return new GetDisponibilitesPraticienActionGateway($container->get('toubeelibClient'));
+        return new GetDisponibilitesPraticienActionGateway($container->get('rdvsClient'));
     },
     GetRendezVousActionGateway::class => function(ContainerInterface $container){
-        return new GetRendezVousActionGateway($container->get('toubeelibClient'));
+        return new GetRendezVousActionGateway($container->get('rdvsClient'));
     },
     ModifRendezVousActionGateway::class => function(ContainerInterface $container){
-        return new ModifRendezVousActionGateway($container->get('toubeelibClient'));
+        return new ModifRendezVousActionGateway($container->get('rdvsClient'));
     },
     DeleteRendezVousActionGateway::class => function(ContainerInterface $container){
-        return new DeleteRendezVousActionGateway($container->get('toubeelibClient'));
+        return new DeleteRendezVousActionGateway($container->get('rdvsClient'));
     },
 
     // Lier l'interface ClientInterface à Guzzle pour les appels au service d'authentification

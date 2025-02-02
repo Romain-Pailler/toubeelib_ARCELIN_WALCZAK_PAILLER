@@ -8,4 +8,5 @@ return  [
     'api.toubeelib' => 'http://api.toubeelib/',
     'api.praticien' => 'http://api.praticien/',
     'api.auth' => 'http://api.auth/',
+    'api.rdvs' => 'http://api.rdvs/',
 ];
