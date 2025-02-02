@@ -20,6 +20,8 @@ composer.lock
 /gateway/vendor
 /praticiens/logs/*
 /praticiens/vendor
+/rdvs/logs/*
+/rdvs/vendor
 *.env
 /vendor/
 app/vendor

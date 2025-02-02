@@ -13,6 +13,8 @@ class PraticienDTO extends DTO
     protected string $adresse;
     protected string $tel;
     protected string $specialite_label;
+    protected string $specialite_id;
+
 
     protected array $jours_semaine_off = [];
     protected array $vacance_period = [];
@@ -28,5 +30,6 @@ class PraticienDTO extends DTO
         $this->adresse = $p->adresse;
         $this->tel = $p->tel;
         $this->specialite_label = $p->specialite->label;
+        $this->specialite_id = $p->specialite->getID();
     }
 }
