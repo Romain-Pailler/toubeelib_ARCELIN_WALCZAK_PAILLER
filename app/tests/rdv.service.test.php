@@ -20,7 +20,9 @@ $pdoPraticienRepository = new \toubeelib\infrastructure\PDO\PDOPraticien($pdoPra
 // Créer le service
 $service = new \toubeelib\core\services\rdv\ServiceRendezVous($pdoRendezVousRepository, $pdoPraticienRepository);
 
-$rdvdto = new \toubeelib\core\dto\InputRendezVousDTO('1', '1', 'A', '2024-10-02 09:30');
+$rdvdto = new \toubeelib\core\dto\InputRendezVousDTO('1', '1', 'A', '2024-10-02 16:30');
+
+var_dump($rdvdto);
 
 
 

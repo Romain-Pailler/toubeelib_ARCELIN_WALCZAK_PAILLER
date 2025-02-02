@@ -8,6 +8,7 @@ use DatePeriod;
 use DateTimeImmutable;
 use DomainException;
 use Exception;
+use Ramsey\Uuid\Uuid;
 use toubeelib\core\domain\entities\rdv\RendezVous;
 use toubeelib\core\dto\InputRendezVousDTO;
 use toubeelib\core\dto\RendezVousDTO;
@@ -16,9 +17,9 @@ use toubeelib\core\repositoryInterfaces\RdvRepositoryInterface;
 use toubeelib\core\repositoryInterfaces\RepositoryEntityNotFoundException;
 use toubeelib\core\services\rdv\ServiceRendezVousNotDataFoundException;
 
-use Monolog\Logger; // Use the correct namespace for Logger
-use Monolog\Handler\StreamHandler; // Use the correct namespace for StreamHandler
-use Monolog\Handler\FirePHPHandler; // Use the correct namespace for FirePHPHandler
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Monolog\Handler\FirePHPHandler;
 use toubeelib\core\services\praticien\ServicePraticienInvalidDataException;
 
 class ServiceRendezVous implements ServiceRendezVousInterface
@@ -73,7 +74,9 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         }
 
         // Enregistrer le rendez-vous
-        $this->rendezvousRepository->save($rendezvous);
+        $id_new_rdv = $this->rendezvousRepository->save($rendezvous);
+
+        $rendezvous->setID($id_new_rdv);
 
         // Logging
         $this->displayInLogger('Rendez-vous créé : Praticien -> ' . $rdv->praticien . ' / Patient -> ' . $rdv->patient . ' / Specialite -> ' . $rdv->specialite);
