@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\HttpNotFoundException;
 
-class GatewayGetAllPraticiensAction extends AbstractAction
+class DeleteRendezVousActionGateway extends AbstractAction
 {
     private ClientInterface $toubeelibClient;
 
@@ -17,11 +17,22 @@ class GatewayGetAllPraticiensAction extends AbstractAction
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
+        $id = $args['id'] ?? null;
+
+        if (empty($id)) {
+            $response->getBody()->write(json_encode(['error' => "L'ID du rendez-vous est requis."]));
+            return $response->withHeader('Content-Type', 'application/json')
+                ->withStatus(400);
+        }
+
         try {
-            $queryParams = $request->getQueryParams();
-            $apiResponse = $this->toubeelibClient->get("praticiens", [
-                'query' => !empty($queryParams) ? $queryParams : []
-            ]);
+            $parsedBody = $request->getParsedBody();
+            if (!isset($parsedBody['annulerPar']) || !is_string($parsedBody['annulerPar'])) {
+                $response->getBody()->write(json_encode(['error' => "Le champ 'annulerPar' est requis et doit être une chaîne valide."]));
+                return $response->withHeader('Content-Type', 'application/json')
+                    ->withStatus(400);
+            }
+            $apiResponse = $this->toubeelibClient->delete("rdvs/$id", ['json' => $parsedBody]);
 
             // Retourner la réponse du backend
             $response->getBody()->write($apiResponse->getBody()->getContents());
@@ -33,7 +44,7 @@ class GatewayGetAllPraticiensAction extends AbstractAction
             return $response->withHeader('Content-Type', 'application/json')
                 ->withStatus($e->getResponse()->getStatusCode());
         } catch (\Exception $e) {
-            // Gestion des erreurs internes
+            // Gestion des erreurs génériques
             $response->getBody()->write(json_encode(['error' => 'Erreur interne du serveur']));
             return $response->withHeader('Content-Type', 'application/json')
                 ->withStatus(500);
