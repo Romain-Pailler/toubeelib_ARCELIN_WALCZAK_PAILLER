@@ -49,16 +49,14 @@ return [
     GatewayGetAllPraticiensAction::class => function (ContainerInterface $container) {
         return new GatewayGetAllPraticiensAction($container->get('praticienClient'));
     },
-
     GatewayGetPraticienByIdAction::class => function (ContainerInterface $container) {
         return new GatewayGetPraticienByIdAction($container->get('praticienClient'));
     },
-    GatewayGetPraticienByIdAction::class => function(ContainerInterface $container){
-        return new GatewayGetPraticienByIdAction($container->get('toubeelibClient'));
-    },
     CreatePraticienActionGateway::class => function(ContainerInterface $container){
-        return new CreatePraticienActionGateway($container->get('toubeelibClient'));
+        return new CreatePraticienActionGateway($container->get('praticienClient'));
     },
+
+    // CHANGER TOUBEELIBCLIENT PAR RDVCLIENT
     CreateRendezVousActionGateway::class => function(ContainerInterface $container){
         return new CreateRendezVousActionGateway($container->get('toubeelibClient'));
     },
